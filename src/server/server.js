@@ -704,7 +704,7 @@ function moveloop() {
 
 function gameloop() {
     if (users.length > 0) {
-        users.sort( function(a, b) { return b.massTotal - a.massTotal; });
+        users.sort( function(a, b) { return Math.abs(b.chargeTotal) - Math.abs(a.chargeTotal); });
 
         var topUsers = [];
 
@@ -712,7 +712,8 @@ function gameloop() {
             if(users[i].type == 'player') {
                 topUsers.push({
                     id: users[i].id,
-                    name: users[i].name
+                    name: users[i].name,
+                    charge: users[i].chargeTotal
                 });
             }
         }
@@ -729,15 +730,15 @@ function gameloop() {
                 }
             }
         }
-        for (i = 0; i < users.length; i++) {
-            for(var z=0; z < users[i].cells.length; z++) {
-                if (users[i].cells[z].mass * (1 - (c.massLossRate / 1000)) > c.defaultPlayerMass) {
-                    var massLoss = users[i].cells[z].mass * (1 - (c.massLossRate / 1000));
-                    users[i].massTotal -= users[i].cells[z].mass - massLoss;
-                    users[i].cells[z].mass = massLoss;
-                }
-            }
-        }
+        // for (i = 0; i < users.length; i++) {
+        //     for(var z=0; z < users[i].cells.length; z++) {
+        //         if (users[i].cells[z].mass * (1 - (c.massLossRate / 1000)) > c.defaultPlayerMass) {
+        //             var massLoss = users[i].cells[z].mass * (1 - (c.massLossRate / 1000));
+        //             users[i].massTotal -= users[i].cells[z].mass - massLoss;
+        //             users[i].cells[z].mass = massLoss;
+        //         }
+        //     }
+        // }
     }
     balanceMass();
 }

@@ -372,7 +372,7 @@ function setupSocket(socket) {
         if (mobile) {
             document.getElementById('gameAreaWrapper').removeChild(document.getElementById('chatbox'));
         }
-		c.focus();
+        c.focus();
     });
 
     socket.on('gameSetup', function(data) {
@@ -388,14 +388,14 @@ function setupSocket(socket) {
             status += '<br />';
             if (leaderboard[i].id == player.id){
                 if(leaderboard[i].name.length !== 0)
-                    status += '<span class="me">' + (i + 1) + '. ' + leaderboard[i].name + "</span>";
+                    status += '<span class="me">' + (i + 1) + '. ' + leaderboard[i].name + ": (" + leaderboard[i].charge + ")</span>";
                 else
-                    status += '<span class="me">' + (i + 1) + ". An unnamed cell</span>";
+                    status += '<span class="me">' + (i + 1) + ". An unnamed cell: (" + leaderboard[i].charge + ")</span>";
             } else {
                 if(leaderboard[i].name.length !== 0)
-                    status += (i + 1) + '. ' + leaderboard[i].name;
+                    status += (i + 1) + '. ' + leaderboard[i].name + ": (" + leaderboard[i].charge + ")";
                 else
-                    status += (i + 1) + '. An unnamed cell';
+                    status += (i + 1) + '. An unnamed cell: (' + leaderboard[i].charge + ")";
             }
         }
         //status += '<br />Players: ' + data.players;
