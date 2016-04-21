@@ -587,8 +587,8 @@ function drawPlayers(order) {
             graph.fillText(nameCell, circle.x, circle.y);
             graph.font = 'bold ' + Math.max(fontSize / 3 * 2, 10) + 'px sans-serif';
             if(nameCell.length === 0) fontSize = 0;
-            graph.strokeText(Math.round(cellCurrent.mass), circle.x, circle.y+fontSize);
-            graph.fillText(Math.round(cellCurrent.mass), circle.x, circle.y+fontSize);
+            graph.strokeText(Math.round(cellCurrent.charge), circle.x, circle.y+fontSize);
+            graph.fillText(Math.round(cellCurrent.charge), circle.x, circle.y+fontSize);
         }
     }
 }
