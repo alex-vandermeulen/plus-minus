@@ -63,6 +63,9 @@ app.use(express.static(__dirname + '/../client'));
 }*/
 
 function moveFood(food) {
+    var totalDeltaX = 0;
+    var totalDeltaY = 0;
+
     // for each player
     for (var i = 0; i < users.length; i++) {
         var player = users[i];
@@ -80,14 +83,14 @@ function moveFood(food) {
             deltaY = vectorY / 100;
         }
 
-        // Move the food based on its charge vs. the player's charge
+        // Determine whether the delta is towards or away from the player
         if (player.chargeTotal * food.charge < 0) {
-            food.x = food.x + deltaX;
-            food.y = food.y + deltaY;
+            totalDeltaX += deltaX;
+            totalDeltaY += deltaY;
         }
         else if (player.chargeTotal * food.charge > 0) {
-            food.x = food.x - deltaX;
-            food.y = food.y - deltaY;
+            totalDeltaX -= deltaX;
+            totalDeltaY -= deltaY;
         }
 
         // Keep food inside the game board
@@ -108,6 +111,22 @@ function moveFood(food) {
         // add to the total acceleration the force adjusted by distance
         //totalAccelerationX += vectorX * force;
         //totalAccelerationY += vectorY * force;
+    }
+
+    // Move the combined delta to the food's position
+    food.x += totalDeltaX;
+    food.y += totalDeltaY;
+
+    // Keep food inside the game board
+    if (food.x < 0 + food.radius) {
+        food.x = 0 + food.radius;
+    } else if (food.x > c.gameWidth - food.radius) {
+        food.x = c.gameWidth - food.radius;
+    }
+    if (food.y < 0 + food.radius) {
+        food.y = 0 + food.radius;
+    } else if (food.y> c.gameHeight - food.radius) {
+        food.y = c.gameHeight - food.radius;
     }
 }
 
