@@ -18,7 +18,7 @@ var animLoopHandle;
 var spin = -Math.PI;
 var enemySpin = -Math.PI;
 var mobile = false;
-var foodSides = 10;
+var foodSides = 9;
 var virusSides = 20;
 
 var debug = function(args) {
@@ -458,20 +458,8 @@ function setupSocket(socket) {
 }
 
 function drawCircle(centerX, centerY, radius, sides) {
-    var theta = 0;
-    var x = 0;
-    var y = 0;
-
     graph.beginPath();
-
-    for (var i = 0; i < sides; i++) {
-        theta = (i / sides) * 2 * Math.PI;
-        x = centerX + radius * Math.sin(theta);
-        y = centerY + radius * Math.cos(theta);
-        graph.lineTo(x, y);
-    }
-
-    graph.closePath();
+    graph.arc(centerX,centerY,radius,0,2*Math.PI);
     graph.stroke();
     graph.fill();
 }
@@ -480,14 +468,14 @@ function drawFood(food) {
     graph.strokeStyle = 'hsl(' + food.hue + ', 100%, 45%)';
     graph.fillStyle = 'hsl(' + food.hue + ', 100%, 50%)';
     graph.lineWidth = foodConfig.border;
-    drawCircle(food.x - player.x + screenWidth / 2, food.y - player.y + screenHeight / 2, food.radius, foodSides);
+    drawCircle(food.x - player.x + screenWidth / 2, food.y - player.y + screenHeight / 2, food.radius);
 }
 
 function drawVirus(virus) {
     graph.strokeStyle = virus.stroke;
     graph.fillStyle = virus.fill;
     graph.lineWidth = virus.strokeWidth;
-    drawCircle(virus.x - player.x + screenWidth / 2, virus.y - player.y + screenHeight / 2, virus.radius, virusSides);
+    drawCircle(virus.x - player.x + screenWidth / 2, virus.y - player.y + screenHeight / 2, virus.radius);
 }
 
 function drawFireFood(mass) {
