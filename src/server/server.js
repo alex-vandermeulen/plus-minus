@@ -63,13 +63,12 @@ app.use(express.static(__dirname + '/../client'));
 }*/
 
 function moveFood(food) {
-    //simple
-    var deltaX = 0;
-    var deltaY = 0;
-
     // for each player
     for (var i = 0; i < users.length; i++) {
         var player = users[i];
+
+        var deltaX = 0;
+        var deltaY = 0;
 
         // find the distance between the particle and the player
         var vectorX = player.x - food.x;
@@ -92,15 +91,15 @@ function moveFood(food) {
         }
 
         // Keep food inside the game board
-        if (food.x < 0) {
-            food.x = 0;
-        } else if (food.x > c.gameWidth) {
-            food.x = c.gameWidth;
+        if (food.x < 0 + food.radius) {
+            food.x = 0 + food.radius;
+        } else if (food.x > c.gameWidth - food.radius) {
+            food.x = c.gameWidth - food.radius;
         }
-        if (food.y < 0) {
-            food.y = 0;
-        } else if (food.y > c.gameHeight) {
-            food.y = c.gameHeight;
+        if (food.y < 0 + food.radius) {
+            food.y = 0 + food.radius;
+        } else if (food.y> c.gameHeight - food.radius) {
+            food.y = c.gameHeight - food.radius;
         }
 
         // calculate the force via MAGIC and HIGH SCHOOL SCIENCE!
