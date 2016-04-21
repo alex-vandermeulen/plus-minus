@@ -65,6 +65,8 @@ app.use(express.static(__dirname + '/../client'));
 function moveFood(food) {
     var totalDeltaX = 0;
     var totalDeltaY = 0;
+    var desX = food.x;
+    var desY = food.y;
 
     // for each player
     for (var i = 0; i < users.length; i++) {
@@ -93,18 +95,6 @@ function moveFood(food) {
             totalDeltaY -= deltaY;
         }
 
-        // Keep food inside the game board
-        if (food.x < 0 + food.radius) {
-            food.x = 0 + food.radius;
-        } else if (food.x > c.gameWidth - food.radius) {
-            food.x = c.gameWidth - food.radius;
-        }
-        if (food.y < 0 + food.radius) {
-            food.y = 0 + food.radius;
-        } else if (food.y> c.gameHeight - food.radius) {
-            food.y = c.gameHeight - food.radius;
-        }
-
         // calculate the force via MAGIC and HIGH SCHOOL SCIENCE!
         //var force = player.mass / Math.pow(vectorX*vectorX+vectorY*vectorY,1.5);
 
@@ -114,20 +104,22 @@ function moveFood(food) {
     }
 
     // Move the combined delta to the food's position
-    food.x += totalDeltaX;
-    food.y += totalDeltaY;
+    desX += totalDeltaX;
+    desY += totalDeltaY;
 
     // Keep food inside the game board
-    if (food.x < 0 + food.radius) {
-        food.x = 0 + food.radius;
-    } else if (food.x > c.gameWidth - food.radius) {
-        food.x = c.gameWidth - food.radius;
+    if (desX < 0 + food.radius) {
+        desX = 0 + food.radius;
+    } else if (desX > c.gameWidth - food.radius) {
+        desX = c.gameWidth - food.radius;
     }
-    if (food.y < 0 + food.radius) {
-        food.y = 0 + food.radius;
-    } else if (food.y> c.gameHeight - food.radius) {
-        food.y = c.gameHeight - food.radius;
+    if (desY < 0 + food.radius) {
+        desY = 0 + food.radius;
+    } else if (desY> c.gameHeight - food.radius) {
+        desY = c.gameHeight - food.radius;
     }
+    food.x = desX;
+    food.y = desY;
 }
 
 function addFood(toAdd) {
