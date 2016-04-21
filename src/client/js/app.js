@@ -521,7 +521,7 @@ function drawPlayers(order) {
         if (luminosity < 45) {
             luminosity = 45;
         }
-        var darkerLuminosity = luminosity-8;
+        var darkerLuminosity = luminosity-10;
         if (darkerLuminosity < 40) {
             darkerLuminosity = 40;
         }
