@@ -122,7 +122,7 @@ function addFood(toAdd) {
             radius: radius,
             mass: Math.random() + 2,
             charge: charge,
-            hue: 270 - (charge * 90)
+            hue: 270 + (charge * 90)
         });
     }
 }
