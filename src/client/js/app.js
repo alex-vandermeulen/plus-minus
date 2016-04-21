@@ -527,12 +527,12 @@ function drawPlayers(order) {
         }
 
         if(cellCurrent.charge > 0) { //red
-            graph.strokeStyle = 'hsl(0, 100%, ' + darkerLuminosity + '%)';
-            graph.fillStyle = 'hsl(0, 100%, '+ luminosity + '%)';
+            graph.strokeStyle = 'hsl(38, 96%, ' + darkerLuminosity + '%)';
+            graph.fillStyle = 'hsl(38, 96%, '+ luminosity + '%)';
         }
         else if(cellCurrent.charge < 0) { //blue
-            graph.strokeStyle = 'hsl(180, 100%, ' + darkerLuminosity + '%)';
-            graph.fillStyle = 'hsl(180, 100%, '+ luminosity + '%)';
+            graph.strokeStyle = 'hsl(198, 76%, ' + darkerLuminosity + '%)';
+            graph.fillStyle = 'hsl(198, 76%, '+ luminosity + '%)';
         }
         else { //gray
             graph.strokeStyle = 'hsl(0, 0%, ' + darkerLuminosity + '%)';
