@@ -5,21 +5,9 @@ var playerType;
 var playerNameInput = document.getElementById('playerNameInput');
 var socket;
 var reason;
-var KEY_ESC = 27;
-var KEY_ENTER = 13;
-var KEY_FIREFOOD = 119;
-var KEY_SPLIT = 32;
-var KEY_LEFT = 37;
-var KEY_UP = 38;
-var KEY_RIGHT = 39;
-var KEY_DOWN = 40;
-var borderDraw = false;
 var animLoopHandle;
 var spin = -Math.PI;
-var enemySpin = -Math.PI;
 var mobile = false;
-var foodSides = 9;
-var virusSides = 20;
 
 var debug = function(args) {
     if (console && console.log) {
@@ -31,14 +19,14 @@ if ( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
     mobile = true;
 }
 
-function startGame(type) {
+function startGame() {
     playerName = playerNameInput.value.replace(/(<([^>]+)>)/ig, '').substring(0,25);
-    playerType = type;
+    playerType = 'player';
 
     screenWidth = window.innerWidth;
     screenHeight = window.innerHeight;
 
-    document.getElementById('startMenuWrapper').style.maxHeight = '0px';
+    document.getElementById('page-404').style.display = 'none';
     document.getElementById('gameAreaWrapper').style.display = 'block';
     if (!socket) {
         socket = io({query:"type=" + type});
@@ -51,7 +39,7 @@ function startGame(type) {
 
 window.onload = function() {
     document.getElementById('startButton').onclick = function () {
-        startGame('player');
+        startGame();
     };
 };
 
@@ -209,35 +197,16 @@ function setupSocket(socket) {
         fireFood = massList;
     });
 
-    // Death.
-    socket.on('RIP', function () {
-        gameStart = false;
-        died = true;
-        window.setTimeout(function() {
-            document.getElementById('gameAreaWrapper').style.opacity = 0;
-            document.getElementById('startMenuWrapper').style.maxHeight = '1000px';
-            died = false;
-            if (animLoopHandle) {
-                window.cancelAnimationFrame(animLoopHandle);
-                animLoopHandle = undefined;
-            }
-        }, 2500);
-    });
-
     socket.on('kick', function (data) {
         gameStart = false;
         reason = data;
         kicked = true;
         socket.close();
     });
-
-    socket.on('virusSplit', function (virusCell) {
-        socket.emit('2', virusCell);
-        reenviar = false;
-    });
+    
 }
 
-function drawCircle(centerX, centerY, radius, sides) {
+function drawCircle(centerX, centerY, radius) {
     graph.beginPath();
     graph.arc(centerX,centerY,radius,0,2*Math.PI);
     graph.stroke();
@@ -297,13 +266,13 @@ function drawPlayers(order) {
         var points = 30 + ~~(cellCurrent.mass/5);
         var increase = Math.PI * 2 / points;
 
-        var luminosity = 102-(Math.abs(cellCurrent.charge*2));
+        var luminosity = 101-(Math.abs(cellCurrent.charge));
         if (luminosity < 45) {
             luminosity = 45;
         }
         var darkerLuminosity = luminosity-10;
-        if (darkerLuminosity < 40) {
-            darkerLuminosity = 40;
+        if (darkerLuminosity < 35) {
+            darkerLuminosity = 35;
         }
 
         if(cellCurrent.charge > 0) { //red
@@ -345,10 +314,7 @@ function drawPlayers(order) {
             xstore[i] = x;
             ystore[i] = y;
         }
-        /*if (wiggle >= player.radius/ 3) inc = -1;
-        *if (wiggle <= player.radius / -3) inc = +1;
-        *wiggle += inc;
-        */
+
         for (i = 0; i < points; ++i) {
             if (i === 0) {
                 graph.beginPath();
