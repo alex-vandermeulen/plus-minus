@@ -28,5 +28,7 @@
     "virusUniformDisposition": false,
     "newPlayerInitialPosition": "farthest",
     "massLossRate": 1,
-    "mergeTimer": 15
+    "mergeTimer": 15,
+    "playerRadius": 50,
+    "foodRadius": 10
 }

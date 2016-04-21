@@ -39,7 +39,7 @@ var initMassLog = util.log(c.defaultPlayerMass, c.slowBase);
 app.use(express.static(__dirname + '/../client'));
 
 function addFood(toAdd) {
-    var radius = util.massToRadius(c.foodMass);
+    var radius = c.foodRadius;
     while (toAdd--) {
         var position = c.foodUniformDisposition ? util.uniformPosition(food, radius) : util.randomPosition(radius);
         var charge = gameCharge <= 0 ? 1 : -1;
@@ -60,9 +60,9 @@ function addFood(toAdd) {
 }
 
 function addVirus(toAdd) {
+    var radius = c.playerRadius;
     while (toAdd--) {
         var mass = util.randomInRange(c.virus.defaultMass.from, c.virus.defaultMass.to, true);
-        var radius = util.massToRadius(mass);
         var position = c.virusUniformDisposition ? util.uniformPosition(virus, radius) : util.randomPosition(radius);
         virus.push({
             id: ((new Date()).getTime() + '' + virus.length) >>> 0,
@@ -134,7 +134,6 @@ function movePlayer(player) {
                     }
                     else if(distance < radiusTotal / 1.75) {
                         player.cells[i].mass += player.cells[j].mass;
-                        player.cells[i].radius = util.massToRadius(player.cells[i].mass);
                         player.cells.splice(j, 1);
                     }
                 }
@@ -227,8 +226,8 @@ function balanceMass() {
 io.on('connection', function (socket) {
     console.log('A user connected!', socket.handshake.query.type);
 
+    var radius = c.playerRadius;
     var type = socket.handshake.query.type;
-    var radius = util.massToRadius(c.defaultPlayerMass);
     var position = c.newPlayerInitialPosition == 'farthest' ? util.uniformPosition(users, radius) : util.randomPosition(radius);
 
     var cells = [];
@@ -274,7 +273,6 @@ io.on('connection', function (socket) {
             console.log('[INFO] Player ' + player.name + ' connected!');
             sockets[player.id] = socket;
 
-            var radius = util.massToRadius(c.defaultPlayerMass);
             var position = c.newPlayerInitialPosition == 'farthest' ? util.uniformPosition(users, radius) : util.randomPosition(radius);
 
             player.x = position.x;
@@ -286,7 +284,7 @@ io.on('connection', function (socket) {
                     mass: c.defaultPlayerMass,
                     x: position.x,
                     y: position.y,
-                    radius: radius,
+                    radius: c.playerRadius,
                     charge: 0
                 }];
                 player.massTotal = c.defaultPlayerMass;
@@ -427,7 +425,7 @@ io.on('connection', function (socket) {
                     },
                     x: currentPlayer.cells[i].x,
                     y: currentPlayer.cells[i].y,
-                    radius: util.massToRadius(mass),
+                    radius: c.playerRadius,
                     speed: 25
                 });
             }
@@ -438,7 +436,7 @@ io.on('connection', function (socket) {
             if(cell.mass >= c.defaultPlayerMass*2) {
                 cell.mass = cell.mass/2;
                 cell.charge = cell.charge/2;
-                cell.radius = util.massToRadius(cell.mass);
+                cell.radius = c.playerRadius;
                 currentPlayer.cells.push({
                     mass: cell.mass,
                     x: cell.x,
@@ -585,7 +583,6 @@ function tickPlayer(currentPlayer) {
         massGained += (foodEaten.length * c.foodMass);
         currentCell.mass += massGained;
         currentPlayer.massTotal += massGained;
-        currentCell.radius = util.massToRadius(currentCell.mass);
         playerCircle.r = currentCell.radius;
 
         currentCell.charge += chargeChange;
