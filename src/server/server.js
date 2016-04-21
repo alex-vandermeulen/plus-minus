@@ -115,7 +115,7 @@ function addFood(toAdd) {
             radius: radius,
             mass: Math.random() + 2,
             charge: charge,
-            hue: 270 + (charge * 90)
+            hue: 118 - (charge * 80)
         });
     }
 }
@@ -201,7 +201,7 @@ function movePlayer(player) {
             }
         }
         if(player.cells.length > i) {
-            var borderCalc = player.cells[i].radius / 3;
+            var borderCalc = player.cells[i].radius / 1.5;
             if (player.cells[i].x > c.gameWidth - borderCalc) {
                 player.cells[i].x = c.gameWidth - borderCalc;
             }
