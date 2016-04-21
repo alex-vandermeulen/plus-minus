@@ -199,7 +199,7 @@ div {
 #gameAreaWrapper {
     top: 0;
     left: 0;
-    opacity: 0;
+    display: none;
 }
 
 @media only screen  and (min-width : 1224px) {

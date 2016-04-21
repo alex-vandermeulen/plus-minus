@@ -39,7 +39,7 @@ function startGame(type) {
     screenHeight = window.innerHeight;
 
     document.getElementById('startMenuWrapper').style.maxHeight = '0px';
-    document.getElementById('gameAreaWrapper').style.opacity = 1;
+    document.getElementById('gameAreaWrapper').style.display = 'block';
     if (!socket) {
         socket = io({query:"type=" + type});
         setupSocket(socket);
@@ -152,9 +152,6 @@ function setupSocket(socket) {
         socket.emit('gotit', player);
         gameStart = true;
         debug('Game started at: ' + gameStart);
-        if (mobile) {
-            document.getElementById('gameAreaWrapper').removeChild(document.getElementById('chatbox'));
-        }
 		c.focus();
     });
 
