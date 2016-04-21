@@ -26,6 +26,7 @@ var massFood = [];
 var food = [];
 var virus = [];
 var sockets = {};
+var gameCharge = 0;
 
 var leaderboard = [];
 var leaderboardChanged = false;
@@ -41,6 +42,10 @@ function addFood(toAdd) {
     var radius = util.massToRadius(c.foodMass);
     while (toAdd--) {
         var position = c.foodUniformDisposition ? util.uniformPosition(food, radius) : util.randomPosition(radius);
+        var charge = gameCharge <= 0 ? 1 : -1;
+
+        gameCharge += charge;
+
         food.push({
             // Make IDs unique.
             id: ((new Date()).getTime() + '' + food.length) >>> 0,
@@ -48,7 +53,8 @@ function addFood(toAdd) {
             y: position.y,
             radius: radius,
             mass: Math.random() + 2,
-            hue: Math.round(Math.random() * 360)
+            charge: charge,
+            hue: (charge * 100) + 360
         });
     }
 }
