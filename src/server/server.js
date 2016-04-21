@@ -38,6 +38,62 @@ var initMassLog = util.log(c.defaultPlayerMass, c.slowBase);
 
 app.use(express.static(__dirname + '/../client'));
 
+/*function moveFood(food) {
+    // our starting acceleration this frame
+    var totalAccelerationX = 0;
+    var totalAccelerationY = 0;
+
+    // for each player
+    for (var i = 0; i < users.length; i++) {
+        var player = users[i];
+        // find the distance between the particle and the player
+        var vectorX = player.x - food.x;
+        var vectorY = player.y - food.y;
+
+        // calculate the force via MAGIC and HIGH SCHOOL SCIENCE!
+        var force = player.mass / Math.pow(vectorX*vectorX+vectorY*vectorY,1.5);
+
+        // add to the total acceleration the force adjusted by distance
+        totalAccelerationX += vectorX * force;
+        totalAccelerationY += vectorY * force;
+    }
+
+    // update our particle's acceleration
+    food.acceleration = new Vector(totalAccelerationX, totalAccelerationY);
+}*/
+
+function moveFood(food) {
+    //simple
+    var deltaX = 0;
+    var deltaY = 0;
+
+    // for each player
+    for (var i = 0; i < users.length; i++) {
+        var player = users[i];
+        // find the distance between the particle and the player
+        var vectorX = player.x - food.x;
+        var vectorY = player.y - food.y;
+        if (vectorX*vectorX + vectorY*vectorY <= 80000) {
+            deltaX = vectorX / 10;
+            deltaY = vectorY / 10;
+        }
+        if (player.chargeTotal * food.charge < 0) {
+            food.x = food.x + deltaX;
+            food.y = food.y + deltaY;
+        } else {
+            food.x = food.x - deltaX;
+            food.y = food.y - deltaY;
+        }
+
+        // calculate the force via MAGIC and HIGH SCHOOL SCIENCE!
+        //var force = player.mass / Math.pow(vectorX*vectorX+vectorY*vectorY,1.5);
+
+        // add to the total acceleration the force adjusted by distance
+        //totalAccelerationX += vectorX * force;
+        //totalAccelerationY += vectorY * force;
+    }
+}
+
 function addFood(toAdd) {
     var radius = util.massToRadius(c.foodMass);
     while (toAdd--) {
@@ -255,7 +311,8 @@ io.on('connection', function (socket) {
         target: {
             x: 0,
             y: 0
-        }
+        },
+        chargeTotal: -1
     };
 
     socket.on('gotit', function (player) {
@@ -592,6 +649,9 @@ function moveloop() {
     }
     for (i=0; i < massFood.length; i++) {
         if(massFood[i].speed > 0) moveMass(massFood[i]);
+    }
+    for (i=0; i < food.length; i++) {
+        moveFood(food[i]);
     }
 }
 
