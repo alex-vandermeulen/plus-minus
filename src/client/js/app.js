@@ -514,8 +514,21 @@ function drawPlayers(order) {
         var points = 30 + ~~(cellCurrent.mass/5);
         var increase = Math.PI * 2 / points;
 
-        graph.strokeStyle = 'hsl(' + userCurrent.hue + ', 100%, 45%)';
-        graph.fillStyle = 'hsl(' + userCurrent.hue + ', 100%, 50%)';
+        var luminosity = 77-(Math.abs(cellCurrent.charge*2));
+        var darkerLuminosity = luminosity-5;
+
+        if(cellCurrent.charge > 0) { //red
+            graph.strokeStyle = 'hsl(0, 100%, ' + darkerLuminosity + '%)';
+            graph.fillStyle = 'hsl(0, 100%, '+ luminosity + '%)';
+        }
+        else if(cellCurrent.charge < 0) { //blue
+            graph.strokeStyle = 'hsl(180, 100%, ' + darkerLuminosity + '%)';
+            graph.fillStyle = 'hsl(180, 100%, '+ luminosity + '%)';
+        }
+        else { //gray
+            graph.strokeStyle = 'hsl(0, 0%, ' + darkerLuminosity + '%)';
+            graph.fillStyle = 'hsl(0, 0%, '+ luminosity + '%)';
+        }
         graph.lineWidth = playerConfig.border;
 
         var xstore = [];
