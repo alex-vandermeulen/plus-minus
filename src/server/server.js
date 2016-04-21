@@ -7,13 +7,12 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var SAT = require('sat');
 
-// Redis Cloud stuff
-var redis = require('redis');
-// var client = redis.createClient(process.env.REDISCLOUD_URL, {no_ready_check: true});
-var client = redis.createClient("redis://rediscloud:KzAN5cJPF1LbhOsV@pub-redis-18340.us-east-1-2.5.ec2.garantiadata.com:18340", {no_ready_check: true});
-
 // Import game settings.
 var c = require('../../config.json');
+
+// Redis Cloud stuff
+var redis = require('redis');
+var client = redis.createClient(c.redisUrl, {no_ready_check: true});
 
 // Import utilities.
 var util = require('./lib/util');
@@ -695,7 +694,6 @@ function gameloop() {
                 });
             }
         }
-        console.log("top users:", topUsers);
         updateLeaderBoard(topUsers);
     }
     balanceMass();
@@ -703,15 +701,11 @@ function gameloop() {
 
 function updateLeaderBoard(topUsers) {
     if (leaderboard.length === 0) {
-        console.log("brand new leaderboard");
         leaderboard = topUsers;
         leaderboardChanged = true;
     }
     else {
-        console.log("updating existing leaderboard");
-
         leaderboard = leaderboard.concat(topUsers);
-        console.log("initial leaderboard", leaderboard);
 
         var dedupedLeaderboard = {};
         for (var i = 0; i < leaderboard.length; i++)
@@ -719,13 +713,10 @@ function updateLeaderBoard(topUsers) {
             var key = leaderboard[i].name + "," + leaderboard[i].id;
             var score = leaderboard[i];
 
-            console.log("score item: ", leaderboard[i]);
-
             if (typeof dedupedLeaderboard[key] === 'undefined') {
                 dedupedLeaderboard[key] = score;
             }
             else if (dedupedLeaderboard[key].charge < score.charge) {
-                console.log(score.charge, "is bigger than", dedupedLeaderboard[key].charge);
                 dedupedLeaderboard[key] = score;
             }
         }
@@ -736,10 +727,7 @@ function updateLeaderBoard(topUsers) {
             finalLeaderboard.push(dedupedLeaderboard[keys[i]]);
         }
         finalLeaderboard = finalLeaderboard.slice(0, MAX_LEADER_BOARD_SIZE);
-
-        console.log("before sort: ", finalLeaderboard);
         finalLeaderboard.sort( function(a, b) { return b.charge - a.charge; });
-        console.log("after sort: ", finalLeaderboard);
 
         leaderboard = finalLeaderboard;
         sendLeaderBoardToRedis();
@@ -760,7 +748,6 @@ function loadLeaderBoardFromRedis()
 {
     client.get("leaderboard", function(err, reply) {
         if (reply) {
-            console.log("Retrieved from redis: ", reply.toString());
             leaderboard = JSON.parse(reply.toString());
         }
     });
