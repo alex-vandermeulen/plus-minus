@@ -80,12 +80,12 @@ function moveFood(food) {
         var vectorY = player.y - food.y;
 
         // determine the change in position for food based on distance from player
-        if (vectorX*vectorX + vectorY*vectorY <= 80000) {
-            deltaX = vectorX / 100; 
-            deltaY = vectorY / 100;
-        }
+        //if (vectorX*vectorX + vectorY*vectorY <= 80000) {
+            //deltaX = vectorX / 100;
+            //deltaY = vectorY / 100;
+        //}
 
-        // Determine whether the delta is towards or away from the player
+/*        // Determine whether the delta is towards or away from the player
         if (player.chargeTotal * food.charge < 0) {
             totalDeltaX += deltaX;
             totalDeltaY += deltaY;
@@ -93,10 +93,22 @@ function moveFood(food) {
         else if (player.chargeTotal * food.charge > 0) {
             totalDeltaX -= deltaX;
             totalDeltaY -= deltaY;
-        }
+        }*/
 
-        // calculate the force via MAGIC and HIGH SCHOOL SCIENCE!
-        //var force = player.mass / Math.pow(vectorX*vectorX+vectorY*vectorY,1.5);
+        // calculate the force
+        var force = player.chargeTotal * food.charge / (vectorX*vectorX+vectorY*vectorY);
+
+        // calculate the acceleration
+        var accelX = force * vectorX;
+        var accelY = force * vectorY;
+
+        // calculate the delta
+        if (vectorX*vectorX + vectorY*vectorY <= 1000000) {
+            deltaX = accelX * 20;
+            deltaY = accelY * 20;
+        }
+        totalDeltaX -= deltaX;
+        totalDeltaY -= deltaY;
 
         // add to the total acceleration the force adjusted by distance
         //totalAccelerationX += vectorX * force;
