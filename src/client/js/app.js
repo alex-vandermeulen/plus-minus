@@ -49,57 +49,10 @@ function startGame(type) {
     socket.emit('respawn');
 }
 
-// Checks if the nick chosen contains valid alphanumeric characters (and underscores).
-function validNick() {
-    var regex = /^\w*$/;
-    debug('Regex Test', regex.exec(playerNameInput.value));
-    return regex.exec(playerNameInput.value) !== null;
-}
-
 window.onload = function() {
-
-    var btn = document.getElementById('startButton'),
-        btnS = document.getElementById('spectateButton'),
-        nickErrorText = document.querySelector('#startMenu .input-error');
-
-    btnS.onclick = function () {
-        startGame('spectate');
+    document.getElementById('startButton').onclick = function () {
+        startGame('player');
     };
-    btn.onclick = function () {
-
-        // Checks if the nick is valid.
-        if (validNick()) {
-            nickErrorText.style.opacity = 0;
-            startGame('player');
-        } else {
-            nickErrorText.style.opacity = 1;
-        }
-    };
-
-    var settingsMenu = document.getElementById('settingsButton');
-    var settings = document.getElementById('settings');
-    var instructions = document.getElementById('instructions');
-
-    settingsMenu.onclick = function () {
-        if (settings.style.maxHeight == '300px') {
-            settings.style.maxHeight = '0px';
-        } else {
-            settings.style.maxHeight = '300px';
-        }
-    };
-
-    playerNameInput.addEventListener('keypress', function (e) {
-        var key = e.which || e.keyCode;
-
-        if (key === KEY_ENTER) {
-            if (validNick()) {
-                nickErrorText.style.opacity = 0;
-                startGame('player');
-            } else {
-                nickErrorText.style.opacity = 1;
-            }
-        }
-    });
 };
 
 // Canvas.
@@ -119,7 +72,7 @@ var kicked = false;
 var continuity = false;
 var startPingTime = 0;
 var toggleMassState = 0;
-var backgroundColor = '#f2fbff';
+var backgroundColor = '#FFFFFF';
 var lineColor = '#000000';
 
 var foodConfig = {
@@ -157,9 +110,6 @@ var c = document.getElementById('cvs');
 c.width = screenWidth; c.height = screenHeight;
 c.addEventListener('mousemove', gameInput, false);
 c.addEventListener('mouseout', outOfBounds, false);
-c.addEventListener('keypress', keyInput, false);
-c.addEventListener('keyup', function(event) {reenviar = true; directionUp(event);}, false);
-c.addEventListener('keydown', directionDown, false);
 c.addEventListener('touchstart', touchInput, false);
 c.addEventListener('touchmove', touchInput, false);
 
@@ -170,175 +120,8 @@ function outOfBounds() {
     }
 }
 
-var visibleBorderSetting = document.getElementById('visBord');
-visibleBorderSetting.onchange = toggleBorder;
-
-var showMassSetting = document.getElementById('showMass');
-showMassSetting.onchange = toggleMass;
-
-var continuitySetting = document.getElementById('continuity');
-continuitySetting.onchange = toggleContinuity;
-
-var continuitySetting = document.getElementById('roundFood');
-continuitySetting.onchange = toggleRoundFood;
-
 var graph = c.getContext('2d');
 
-// Chat command callback functions.
-function keyInput(event) {
-	var key = event.which || event.keyCode;
-	if (key === KEY_FIREFOOD && reenviar) {
-        socket.emit('1');
-        reenviar = false;
-    }
-    else if (key === KEY_SPLIT && reenviar) {
-       document.getElementById('split_cell').play();
-        socket.emit('2');
-        reenviar = false;
-    }
-}
-
-    $( "#feed" ).click(function() {
-        socket.emit('1');
-        reenviar = false;
-});
-
-    $( "#split" ).click(function() {
-        socket.emit('2');
-        reenviar = false;
-});
-
-// Function called when a key is pressed, will change direction if arrow key.
-function directionDown(event) {
-	var key = event.which || event.keyCode;
-
-	if (directional(key)) {
-		directionLock = true;
-		if (newDirection(key,directions, true)) {
-			updateTarget(directions);
-			socket.emit('0', target);
-		}
-	}
-}
-
-// Function called when a key is lifted, will change direction if arrow key.
-function directionUp(event) {
-	var key = event.which || event.keyCode;
-	if (directional(key)) {
-		if (newDirection(key,directions, false)) {
-			updateTarget(directions);
-			if (directions.length === 0) directionLock = false;
-			socket.emit('0', target);
-		}
-	}
-}
-
-// Updates the direction array including information about the new direction.
-function newDirection(direction, list, isAddition) {
-	var result = false;
-	var found = false;
-	for (var i = 0, len = list.length; i < len; i++) {
-		if (list[i] == direction) {
-			found = true;
-			if (!isAddition) {
-				result = true;
-				// Removes the direction.
-				list.splice(i, 1);
-			}
-			break;
-		}
-	}
-	// Adds the direction.
-	if (isAddition && found === false) {
-		result = true;
-		list.push(direction);
-	}
-
-	return result;
-}
-
-// Updates the target according to the directions in the directions array.
-function updateTarget(list) {
-	target = { x : 0, y: 0 };
-	var directionHorizontal = 0;
-	var directionVertical = 0;
-	for (var i = 0, len = list.length; i < len; i++) {
-		if (directionHorizontal === 0) {
-			if (list[i] == KEY_LEFT) directionHorizontal -= Number.MAX_VALUE;
-			else if (list[i] == KEY_RIGHT) directionHorizontal += Number.MAX_VALUE;
-		}
-		if (directionVertical === 0) {
-			if (list[i] == KEY_UP) directionVertical -= Number.MAX_VALUE;
-			else if (list[i] == KEY_DOWN) directionVertical += Number.MAX_VALUE;
-		}
-	}
-	target.x += directionHorizontal;
-	target.y += directionVertical;
-}
-
-function directional(key) {
-	return horizontal(key) || vertical(key);
-}
-
-function horizontal(key) {
-	return key == KEY_LEFT || key == KEY_RIGHT;
-}
-
-function vertical(key) {
-	return key == KEY_DOWN || key == KEY_UP;
-}
-function checkLatency() {
-    // Ping.
-    startPingTime = Date.now();
-    socket.emit('ping');
-}
-
-function toggleDarkMode() {
-    var LIGHT = '#f2fbff',
-        DARK = '#181818';
-    var LINELIGHT = '#000000',
-        LINEDARK = '#ffffff';
-
-    if (backgroundColor === LIGHT) {
-        backgroundColor = DARK;
-        lineColor = LINEDARK;
-    } else {
-        backgroundColor = LIGHT;
-        lineColor = LINELIGHT;
-    }
-}
-
-function toggleBorder() {
-    if (!borderDraw) {
-        borderDraw = true;
-    } else {
-        borderDraw = false;
-    }
-}
-
-function toggleMass() {
-    if (toggleMassState === 0) {
-        toggleMassState = 1;
-    } else {
-        toggleMassState = 0;
-    }
-}
-
-function toggleContinuity() {
-    if (!continuity) {
-        continuity = true;
-    } else {
-        continuity = false;
-    }
-}
-
-function toggleRoundFood(args) {
-    if (args || foodSides < 10) {
-        foodSides = (args && !isNaN(args[0]) && +args[0] >= 3) ? +args[0] : 10;
-    } else {
-        foodSides = 5;
-    }
-}
 
 // socket stuff.
 function setupSocket(socket) {
@@ -619,67 +402,6 @@ function valueInRange(min, max, value) {
     return Math.min(max, Math.max(min, value));
 }
 
-function drawgrid() {
-    //  graph.lineWidth = 1;
-    //  graph.strokeStyle = lineColor;
-    //  graph.globalAlpha = 0.15;
-    //  graph.beginPath();
-    //
-    // for (var x = xoffset - player.x; x < screenWidth; x += screenHeight / 18) {
-    //     graph.moveTo(x, 0);
-    //     graph.lineTo(x, screenHeight);
-    // }
-    //
-    // for (var y = yoffset - player.y ; y < screenHeight; y += screenHeight / 18) {
-    //     graph.moveTo(0, y);
-    //     graph.lineTo(screenWidth, y);
-    // }
-    //
-    // graph.stroke();
-    // graph.globalAlpha = 1;
-}
-
-function drawborder() {
-    graph.lineWidth = 1;
-    graph.strokeStyle = playerConfig.borderColor;
-
-    // Left-vertical.
-    if (player.x <= screenWidth/2) {
-        graph.beginPath();
-        graph.moveTo(screenWidth/2 - player.x, 0 ? player.y > screenHeight/2 : screenHeight/2 - player.y);
-        graph.lineTo(screenWidth/2 - player.x, gameHeight + screenHeight/2 - player.y);
-        graph.strokeStyle = lineColor;
-        graph.stroke();
-    }
-
-    // Top-horizontal.
-    if (player.y <= screenHeight/2) {
-        graph.beginPath();
-        graph.moveTo(0 ? player.x > screenWidth/2 : screenWidth/2 - player.x, screenHeight/2 - player.y);
-        graph.lineTo(gameWidth + screenWidth/2 - player.x, screenHeight/2 - player.y);
-        graph.strokeStyle = lineColor;
-        graph.stroke();
-    }
-
-    // Right-vertical.
-    if (gameWidth - player.x <= screenWidth/2) {
-        graph.beginPath();
-        graph.moveTo(gameWidth + screenWidth/2 - player.x, screenHeight/2 - player.y);
-        graph.lineTo(gameWidth + screenWidth/2 - player.x, gameHeight + screenHeight/2 - player.y);
-        graph.strokeStyle = lineColor;
-        graph.stroke();
-    }
-
-    // Bottom-horizontal.
-    if (gameHeight - player.y <= screenHeight/2) {
-        graph.beginPath();
-        graph.moveTo(gameWidth + screenWidth/2 - player.x, gameHeight + screenHeight/2 - player.y);
-        graph.lineTo(screenWidth/2 - player.x, gameHeight + screenHeight/2 - player.y);
-        graph.strokeStyle = lineColor;
-        graph.stroke();
-    }
-}
-
 function gameInput(mouse) {
 	if (!directionLock) {
 		target.x = mouse.clientX - screenWidth / 2;
@@ -730,15 +452,11 @@ function gameLoop() {
         if (gameStart) {
             graph.fillStyle = backgroundColor;
             graph.fillRect(0, 0, screenWidth, screenHeight);
-
-            drawgrid();
+            
             foods.forEach(drawFood);
             fireFood.forEach(drawFireFood);
             viruses.forEach(drawVirus);
             
-            if (borderDraw) {
-                drawborder();
-            }
             var orderMass = [];
             for(var i=0; i<users.length; i++) {
                 for(var j=0; j<users[i].cells.length; j++) {

@@ -1,0 +1,38 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <!-- Meta Properties -->
+    <meta charset="UTF-8">
+    <title>Agar.IO Clone</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/main.css" />
+
+</head>
+<body>
+<div id="gameAreaWrapper">
+    <div id="status"><span class="title">Leaderboard</span></div>
+    <div id="mobile">
+        <input type="image" id="split" class="split" src="img/split.png" alt="splitBtn">
+        <input type="image" id="feed" class="feed" src="img/feed.png" alt="feedBtn">
+    </div>
+    <canvas tabindex="1" id="cvs"></canvas>
+</div>
+<div id="startMenuWrapper">
+    <div id="startMenu">
+        <p>Open Agar</p>
+        <input type="text" tabindex="0" autofocus placeholder="Enter your name here" id="playerNameInput" maxlength="25" />
+        <b class="input-error">Nick must be alphanumeric characters only!</b>
+        <br />
+        <button id="startButton">Play</button></a>
+
+        <br />
+
+
+    </div>
+</div>
+<!-- JS -->
+<script src="//code.jquery.com/jquery-2.2.0.min.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

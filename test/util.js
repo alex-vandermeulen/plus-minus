@@ -33,38 +33,7 @@ describe('util.js', function () {
   });
 
 
-  describe('#validNick', function () {
 
-    it('should allow empty player nicknames', function () {
-      var bool = util.validNick('');
-      //expect(bool).to.be.true;
-    });
-
-    it('should allow ascii character nicknames', function () {
-      var n1 = util.validNick('Walter_White'),
-          n2 = util.validNick('Jesse_Pinkman'),
-          n3 = util.validNick('hank'),
-          n4 = util.validNick('marie_schrader12'),
-          n5 = util.validNick('p');
-
-      expect(n1).to.be.true;
-      expect(n2).to.be.true;
-      expect(n3).to.be.true;
-      expect(n4).to.be.true;
-      expect(n5).to.be.true;
-    });
-
-    it('should disallow unicode-dependent alphabets', function () {
-      var n1 = util.validNick('Йèæü');
-
-      expect(n1).to.be.false;
-    });
-
-    it('should disallow spaces in nicknames', function () {
-        var n1 = util.validNick('Walter White');
-        expect(n1).to.be.false;
-    });
-  });
 
   describe('#log', function () {
 
