@@ -66,7 +66,6 @@ function moveFood(food) {
     //simple
     var deltaX = 0;
     var deltaY = 0;
-
     // for each player
     for (var i = 0; i < users.length; i++) {
         var player = users[i];
@@ -74,15 +73,28 @@ function moveFood(food) {
         var vectorX = player.x - food.x;
         var vectorY = player.y - food.y;
         if (vectorX*vectorX + vectorY*vectorY <= 80000) {
-            deltaX = vectorX / 10;
-            deltaY = vectorY / 10;
+            deltaX = vectorX / 100;
+            deltaY = vectorY / 100;
         }
-        if (player.chargeTotal * food.charge < 0) {
+        if (player.chargeTotal * food.charge === 0) {
+
+        } else if (player.chargeTotal * food.charge < 0) {
             food.x = food.x + deltaX;
             food.y = food.y + deltaY;
         } else {
             food.x = food.x - deltaX;
             food.y = food.y - deltaY;
+        }
+
+        if (food.x < 0) {
+            food.x = 0;
+        } else if (food.x > c.gameWidth) {
+            food.x = c.gameWidth;
+        }
+        if (food.y < 0) {
+            food.y = 0;
+        } else if (food.y > c.gameHeight) {
+            food.y = c.gameHeight;
         }
 
         // calculate the force via MAGIC and HIGH SCHOOL SCIENCE!
@@ -315,7 +327,6 @@ io.on('connection', function (socket) {
             x: 0,
             y: 0
         },
-        chargeTotal: -1
     };
 
     socket.on('gotit', function (player) {
