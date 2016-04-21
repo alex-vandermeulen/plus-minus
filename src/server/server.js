@@ -289,9 +289,11 @@ io.on('connection', function (socket) {
 
     var cells = [];
     var massTotal = 0;
+    var chargeTotal = 0;
     if(type === 'player') {
         cells = [{
             mass: c.defaultPlayerMass,
+            charge: 0,
             x: position.x,
             y: position.y,
             radius: radius
@@ -305,6 +307,7 @@ io.on('connection', function (socket) {
         y: position.y,
         cells: cells,
         massTotal: massTotal,
+        chargeTotal: chargeTotal,
         hue: Math.round(Math.random() * 360),
         type: type,
         lastHeartbeat: new Date().getTime(),
@@ -340,15 +343,17 @@ io.on('connection', function (socket) {
                     mass: c.defaultPlayerMass,
                     x: position.x,
                     y: position.y,
-                    radius: radius
+                    radius: radius,
+                    charge: 0
                 }];
                 player.massTotal = c.defaultPlayerMass;
+                player.chargeTotal = 0;
             }
             else {
                  player.cells = [];
                  player.massTotal = 0;
             }
-            player.hue = Math.round(Math.random() * 360);
+            player.hue = 1;
             currentPlayer = player;
             currentPlayer.lastHeartbeat = new Date().getTime();
             users.push(currentPlayer);
@@ -461,17 +466,17 @@ io.on('connection', function (socket) {
         for(var i=0; i<currentPlayer.cells.length; i++)
         {
             if(((currentPlayer.cells[i].mass >= c.defaultPlayerMass + c.fireFood) && c.fireFood > 0) || (currentPlayer.cells[i].mass >= 20 && c.fireFood === 0)){
-                var masa = 1;
+                var mass = 1;
                 if(c.fireFood > 0)
-                    masa = c.fireFood;
+                    mass = c.fireFood;
                 else
-                    masa = currentPlayer.cells[i].mass*0.1;
-                currentPlayer.cells[i].mass -= masa;
-                currentPlayer.massTotal -=masa;
+                    mass = currentPlayer.cells[i].mass*0.1;
+                currentPlayer.cells[i].mass -= mass;
+                currentPlayer.massTotal -=mass;
                 massFood.push({
                     id: currentPlayer.id,
                     num: i,
-                    masa: masa,
+                    mass: mass,
                     hue: currentPlayer.hue,
                     target: {
                         x: currentPlayer.x - currentPlayer.cells[i].x + currentPlayer.target.x,
@@ -479,7 +484,7 @@ io.on('connection', function (socket) {
                     },
                     x: currentPlayer.cells[i].x,
                     y: currentPlayer.cells[i].y,
-                    radius: util.massToRadius(masa),
+                    radius: util.massToRadius(mass),
                     speed: 25
                 });
             }
@@ -489,13 +494,15 @@ io.on('connection', function (socket) {
         function splitCell(cell) {
             if(cell.mass >= c.defaultPlayerMass*2) {
                 cell.mass = cell.mass/2;
+                cell.charge = cell.charge/2;
                 cell.radius = util.massToRadius(cell.mass);
                 currentPlayer.cells.push({
                     mass: cell.mass,
                     x: cell.x,
                     y: cell.y,
                     radius: cell.radius,
-                    speed: 25
+                    speed: 25,
+                    charge: cell.charge
                 });
             }
         }
@@ -540,7 +547,7 @@ function tickPlayer(currentPlayer) {
         if(SAT.pointInCircle(new V(m.x, m.y), playerCircle)){
             if(m.id == currentPlayer.id && m.speed > 0 && z == m.num)
                 return false;
-            if(currentCell.mass > m.masa * 1.1)
+            if(currentCell.mass > m.mass * 1.1)
                 return true;
         }
         return false;
@@ -601,6 +608,11 @@ function tickPlayer(currentPlayer) {
         var foodEaten = food.map(funcFood)
             .reduce( function(a, b, c) { return b ? a.concat(c) : a; }, []);
 
+        var chargeChange = 0;
+        for(var i=0; i<foodEaten.length; i++) {
+            chargeChange += food[foodEaten[i]].charge;
+        }
+
         foodEaten.forEach(deleteFood);
 
         var massEaten = massFood.map(eatMass)
@@ -613,9 +625,9 @@ function tickPlayer(currentPlayer) {
           sockets[currentPlayer.id].emit('virusSplit', z);
         }
 
-        var masaGanada = 0;
+        var massGained = 0;
         for(var m=0; m<massEaten.length; m++) {
-            masaGanada += massFood[massEaten[m]].masa;
+            massGained += massFood[massEaten[m]].mass;
             massFood[massEaten[m]] = {};
             massFood.splice(massEaten[m],1);
             for(var n=0; n<massEaten.length; n++) {
@@ -627,11 +639,14 @@ function tickPlayer(currentPlayer) {
 
         if(typeof(currentCell.speed) == "undefined")
             currentCell.speed = 6.25;
-        masaGanada += (foodEaten.length * c.foodMass);
-        currentCell.mass += masaGanada;
-        currentPlayer.massTotal += masaGanada;
+        massGained += (foodEaten.length * c.foodMass);
+        currentCell.mass += massGained;
+        currentPlayer.massTotal += massGained;
         currentCell.radius = util.massToRadius(currentCell.mass);
         playerCircle.r = currentCell.radius;
+
+        currentCell.charge += chargeChange;
+        currentPlayer.chargeTotal += chargeChange;
 
         tree.clear();
         tree.insert(users);
@@ -751,16 +766,17 @@ function sendUpdates() {
                                 cells: f.cells,
                                 massTotal: Math.round(f.massTotal),
                                 hue: f.hue,
-                                name: f.name
+                                name: f.name,
+                                chargeTotal: f.chargeTotal
                             };
                         } else {
-                            //console.log("Nombre: " + f.name + " Es Usuario");
                             return {
                                 x: f.x,
                                 y: f.y,
                                 cells: f.cells,
                                 massTotal: Math.round(f.massTotal),
                                 hue: f.hue,
+                                chargeTotal: f.chargeTotal
                             };
                         }
                     }
