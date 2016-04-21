@@ -66,26 +66,32 @@ function moveFood(food) {
     //simple
     var deltaX = 0;
     var deltaY = 0;
+
     // for each player
     for (var i = 0; i < users.length; i++) {
         var player = users[i];
+
         // find the distance between the particle and the player
         var vectorX = player.x - food.x;
         var vectorY = player.y - food.y;
+
+        // determine the change in position for food based on distance from player
         if (vectorX*vectorX + vectorY*vectorY <= 80000) {
-            deltaX = vectorX / 100;
+            deltaX = vectorX / 100; 
             deltaY = vectorY / 100;
         }
-        if (player.chargeTotal * food.charge === 0) {
 
-        } else if (player.chargeTotal * food.charge < 0) {
+        // Move the food based on its charge vs. the player's charge
+        if (player.chargeTotal * food.charge < 0) {
             food.x = food.x + deltaX;
             food.y = food.y + deltaY;
-        } else {
+        }
+        else if (player.chargeTotal * food.charge > 0) {
             food.x = food.x - deltaX;
             food.y = food.y - deltaY;
         }
 
+        // Keep food inside the game board
         if (food.x < 0) {
             food.x = 0;
         } else if (food.x > c.gameWidth) {
