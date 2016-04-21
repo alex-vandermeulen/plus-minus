@@ -468,7 +468,22 @@ function drawFood(food) {
     graph.strokeStyle = 'hsl(' + food.hue + ', 100%, 45%)';
     graph.fillStyle = 'hsl(' + food.hue + ', 100%, 50%)';
     graph.lineWidth = foodConfig.border;
-    drawCircle(food.x - player.x + screenWidth / 2, food.y - player.y + screenHeight / 2, food.radius);
+
+    var xpos = food.x - player.x + screenWidth / 2;
+    var ypos = food.y - player.y + screenHeight / 2;
+
+    drawCircle(xpos, ypos, food.radius);
+
+    var foodText = food.charge >= 0 ? "+" : "-";
+
+    graph.lineJoin = 'round';
+    graph.textAlign = 'center';
+    graph.textBaseline = 'middle';
+
+    graph.fillStyle = playerConfig.textColor;
+    graph.strokeText(foodText, xpos, ypos);
+    graph.fillText(foodText, xpos, ypos);
+    graph.font = 'bold 20px sans-serif';
 }
 
 function drawVirus(virus) {
