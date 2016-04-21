@@ -404,66 +404,66 @@ io.on('connection', function (socket) {
 
     socket.on('1', function() {
         // Fire food.
-        for(var i=0; i<currentPlayer.cells.length; i++)
-        {
-            if(((currentPlayer.cells[i].mass >= c.defaultPlayerMass + c.fireFood) && c.fireFood > 0) || (currentPlayer.cells[i].mass >= 20 && c.fireFood === 0)){
-                var mass = 1;
-                if(c.fireFood > 0)
-                    mass = c.fireFood;
-                else
-                    mass = currentPlayer.cells[i].mass*0.1;
-                currentPlayer.cells[i].mass -= mass;
-                currentPlayer.massTotal -=mass;
-                massFood.push({
-                    id: currentPlayer.id,
-                    num: i,
-                    mass: mass,
-                    hue: currentPlayer.hue,
-                    target: {
-                        x: currentPlayer.x - currentPlayer.cells[i].x + currentPlayer.target.x,
-                        y: currentPlayer.y - currentPlayer.cells[i].y + currentPlayer.target.y
-                    },
-                    x: currentPlayer.cells[i].x,
-                    y: currentPlayer.cells[i].y,
-                    radius: c.playerRadius,
-                    speed: 25
-                });
-            }
-        }
+        // for(var i=0; i<currentPlayer.cells.length; i++)
+        // {
+        //     if(((currentPlayer.cells[i].mass >= c.defaultPlayerMass + c.fireFood) && c.fireFood > 0) || (currentPlayer.cells[i].mass >= 20 && c.fireFood === 0)){
+        //         var mass = 1;
+        //         if(c.fireFood > 0)
+        //             mass = c.fireFood;
+        //         else
+        //             mass = currentPlayer.cells[i].mass*0.1;
+        //         currentPlayer.cells[i].mass -= mass;
+        //         currentPlayer.massTotal -=mass;
+        //         massFood.push({
+        //             id: currentPlayer.id,
+        //             num: i,
+        //             mass: mass,
+        //             hue: currentPlayer.hue,
+        //             target: {
+        //                 x: currentPlayer.x - currentPlayer.cells[i].x + currentPlayer.target.x,
+        //                 y: currentPlayer.y - currentPlayer.cells[i].y + currentPlayer.target.y
+        //             },
+        //             x: currentPlayer.cells[i].x,
+        //             y: currentPlayer.cells[i].y,
+        //             radius: c.playerRadius,
+        //             speed: 25
+        //         });
+        //     }
+        // }
     });
     socket.on('2', function(virusCell) {
-        function splitCell(cell) {
-            if(cell.mass >= c.defaultPlayerMass*2) {
-                cell.mass = cell.mass/2;
-                cell.charge = cell.charge/2;
-                cell.radius = c.playerRadius;
-                currentPlayer.cells.push({
-                    mass: cell.mass,
-                    x: cell.x,
-                    y: cell.y,
-                    radius: cell.radius,
-                    speed: 25,
-                    charge: cell.charge
-                });
-            }
-        }
-
-        if(currentPlayer.cells.length < c.limitSplit && currentPlayer.massTotal >= c.defaultPlayerMass*2) {
-            //Split single cell from virus
-            if(virusCell) {
-              splitCell(currentPlayer.cells[virusCell]);
-            }
-            else {
-              //Split all cells
-              if(currentPlayer.cells.length < c.limitSplit && currentPlayer.massTotal >= c.defaultPlayerMass*2) {
-                  var numMax = currentPlayer.cells.length;
-                  for(var d=0; d<numMax; d++) {
-                      splitCell(currentPlayer.cells[d]);
-                  }
-              }
-            }
-            currentPlayer.lastSplit = new Date().getTime();
-        }
+        // function splitCell(cell) {
+        //     if(cell.mass >= c.defaultPlayerMass*2) {
+        //         cell.mass = cell.mass/2;
+        //         cell.charge = cell.charge/2;
+        //         cell.radius = c.playerRadius;
+        //         currentPlayer.cells.push({
+        //             mass: cell.mass,
+        //             x: cell.x,
+        //             y: cell.y,
+        //             radius: cell.radius,
+        //             speed: 25,
+        //             charge: cell.charge
+        //         });
+        //     }
+        // }
+        //
+        // if(currentPlayer.cells.length < c.limitSplit && currentPlayer.massTotal >= c.defaultPlayerMass*2) {
+        //     //Split single cell from virus
+        //     if(virusCell) {
+        //       splitCell(currentPlayer.cells[virusCell]);
+        //     }
+        //     else {
+        //       //Split all cells
+        //       if(currentPlayer.cells.length < c.limitSplit && currentPlayer.massTotal >= c.defaultPlayerMass*2) {
+        //           var numMax = currentPlayer.cells.length;
+        //           for(var d=0; d<numMax; d++) {
+        //               splitCell(currentPlayer.cells[d]);
+        //           }
+        //       }
+        //     }
+        //     currentPlayer.lastSplit = new Date().getTime();
+        // }
     });
 });
 
@@ -581,9 +581,9 @@ function tickPlayer(currentPlayer) {
         if(typeof(currentCell.speed) == "undefined")
             currentCell.speed = 6.25;
         massGained += (foodEaten.length * c.foodMass);
-        currentCell.mass += massGained;
-        currentPlayer.massTotal += massGained;
-        playerCircle.r = currentCell.radius;
+        // currentCell.mass += massGained;
+        // currentPlayer.massTotal += massGained;
+        // playerCircle.r = currentCell.radius;
 
         currentCell.charge += chargeChange;
         currentPlayer.chargeTotal += chargeChange;
