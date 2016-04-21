@@ -7,6 +7,11 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var SAT = require('sat');
 
+// Redis Cloud stuff
+var redis = require('redis');
+// var client = redis.createClient(process.env.REDISCLOUD_URL, {no_ready_check: true});
+var client = redis.createClient("redis://rediscloud:KzAN5cJPF1LbhOsV@pub-redis-18340.us-east-1-2.5.ec2.garantiadata.com:18340", {no_ready_check: true});
+
 // Import game settings.
 var c = require('../../config.json');
 
@@ -28,8 +33,12 @@ var virus = [];
 var sockets = {};
 var gameCharge = 0;
 
+var MAX_LEADER_BOARD_SIZE = 10;
+
 var leaderboard = [];
-var leaderboardChanged = false;
+loadLeaderBoardFromRedis();
+var leaderboardChanged = true;
+var lastLeaderboardString = "";
 
 var V = SAT.Vector;
 var C = SAT.Circle;
@@ -353,7 +362,7 @@ io.on('connection', function (socket) {
         target: {
             x: 0,
             y: 0
-        },
+        }
     };
 
     socket.on('gotit', function (player) {
@@ -712,39 +721,84 @@ function gameloop() {
 
         var topUsers = [];
 
-        for (var i = 0; i < Math.min(10, users.length); i++) {
+        for (var i = 0; i < Math.min(MAX_LEADER_BOARD_SIZE, users.length); i++) {
             if(users[i].type == 'player') {
                 topUsers.push({
                     id: users[i].id,
                     name: users[i].name,
-                    charge: users[i].chargeTotal
+                    charge: Math.abs(users[i].chargeTotal)
                 });
             }
         }
-        if (isNaN(leaderboard) || leaderboard.length !== topUsers.length) {
-            leaderboard = topUsers;
-            leaderboardChanged = true;
-        }
-        else {
-            for (i = 0; i < leaderboard.length; i++) {
-                if (leaderboard[i].id !== topUsers[i].id) {
-                    leaderboard = topUsers;
-                    leaderboardChanged = true;
-                    break;
-                }
-            }
-        }
-        // for (i = 0; i < users.length; i++) {
-        //     for(var z=0; z < users[i].cells.length; z++) {
-        //         if (users[i].cells[z].mass * (1 - (c.massLossRate / 1000)) > c.defaultPlayerMass) {
-        //             var massLoss = users[i].cells[z].mass * (1 - (c.massLossRate / 1000));
-        //             users[i].massTotal -= users[i].cells[z].mass - massLoss;
-        //             users[i].cells[z].mass = massLoss;
-        //         }
-        //     }
-        // }
+        console.log("top users:", topUsers);
+        updateLeaderBoard(topUsers);
     }
     balanceMass();
+}
+
+function updateLeaderBoard(topUsers) {
+    if (leaderboard.length === 0) {
+        console.log("brand new leaderboard");
+        leaderboard = topUsers;
+        leaderboardChanged = true;
+    }
+    else {
+        console.log("updating existing leaderboard");
+
+        leaderboard = leaderboard.concat(topUsers);
+        console.log("initial leaderboard", leaderboard);
+
+        var dedupedLeaderboard = {};
+        for (var i = 0; i < leaderboard.length; i++)
+        {
+            var key = leaderboard[i].name + "," + leaderboard[i].id;
+            var score = leaderboard[i];
+
+            console.log("score item: ", leaderboard[i]);
+
+            if (typeof dedupedLeaderboard[key] === 'undefined') {
+                dedupedLeaderboard[key] = score;
+            }
+            else if (dedupedLeaderboard[key].charge < score.charge) {
+                console.log(score.charge, "is bigger than", dedupedLeaderboard[key].charge);
+                dedupedLeaderboard[key] = score;
+            }
+        }
+
+        var keys = Object.keys(dedupedLeaderboard);
+        var finalLeaderboard = [];
+        for (i = 0; i < keys.length; i++) {
+            finalLeaderboard.push(dedupedLeaderboard[keys[i]]);
+        }
+        finalLeaderboard = finalLeaderboard.slice(0, MAX_LEADER_BOARD_SIZE);
+
+        console.log("before sort: ", finalLeaderboard);
+        finalLeaderboard.sort( function(a, b) { return b.charge - a.charge; });
+        console.log("after sort: ", finalLeaderboard);
+
+        leaderboard = finalLeaderboard;
+        sendLeaderBoardToRedis();
+        leaderboardChanged = true;
+    }
+}
+
+function sendLeaderBoardToRedis()
+{
+    var leaderboardString = JSON.stringify(leaderboard);
+    if (leaderboardString !== lastLeaderboardString) {
+        client.set("leaderboard", leaderboardString);
+        lastLeaderboardString = leaderboardString;
+    }
+}
+
+function loadLeaderBoardFromRedis()
+{
+    client.get("leaderboard", function(err, reply) {
+        if (reply) {
+            console.log("Retrieved from redis: ", reply.toString());
+            leaderboard = JSON.parse(reply.toString());
+        }
+    });
 }
 
 function sendUpdates() {
