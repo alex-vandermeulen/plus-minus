@@ -315,7 +315,6 @@ io.on('connection', function (socket) {
             x: 0,
             y: 0
         },
-        chargeTotal: -1
     };
 
     socket.on('gotit', function (player) {
