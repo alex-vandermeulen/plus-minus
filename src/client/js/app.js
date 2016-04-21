@@ -517,8 +517,14 @@ function drawPlayers(order) {
         var points = 30 + ~~(cellCurrent.mass/5);
         var increase = Math.PI * 2 / points;
 
-        var luminosity = 77-(Math.abs(cellCurrent.charge*2));
-        var darkerLuminosity = luminosity-5;
+        var luminosity = 102-(Math.abs(cellCurrent.charge*2));
+        if (luminosity < 45) {
+            luminosity = 45;
+        }
+        var darkerLuminosity = luminosity-10;
+        if (darkerLuminosity < 40) {
+            darkerLuminosity = 40;
+        }
 
         if(cellCurrent.charge > 0) { //red
             graph.strokeStyle = 'hsl(0, 100%, ' + darkerLuminosity + '%)';
@@ -614,23 +620,23 @@ function valueInRange(min, max, value) {
 }
 
 function drawgrid() {
-     graph.lineWidth = 1;
-     graph.strokeStyle = lineColor;
-     graph.globalAlpha = 0.15;
-     graph.beginPath();
-
-    for (var x = xoffset - player.x; x < screenWidth; x += screenHeight / 18) {
-        graph.moveTo(x, 0);
-        graph.lineTo(x, screenHeight);
-    }
-
-    for (var y = yoffset - player.y ; y < screenHeight; y += screenHeight / 18) {
-        graph.moveTo(0, y);
-        graph.lineTo(screenWidth, y);
-    }
-
-    graph.stroke();
-    graph.globalAlpha = 1;
+    //  graph.lineWidth = 1;
+    //  graph.strokeStyle = lineColor;
+    //  graph.globalAlpha = 0.15;
+    //  graph.beginPath();
+    //
+    // for (var x = xoffset - player.x; x < screenWidth; x += screenHeight / 18) {
+    //     graph.moveTo(x, 0);
+    //     graph.lineTo(x, screenHeight);
+    // }
+    //
+    // for (var y = yoffset - player.y ; y < screenHeight; y += screenHeight / 18) {
+    //     graph.moveTo(0, y);
+    //     graph.lineTo(screenWidth, y);
+    // }
+    //
+    // graph.stroke();
+    // graph.globalAlpha = 1;
 }
 
 function drawborder() {
