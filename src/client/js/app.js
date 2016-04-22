@@ -220,13 +220,30 @@ function drawCircle(centerX, centerY, radius) {
     graph.fill();
 }
 
+function getPosition(p1, p2, min, max) {
+    var standardPosition = p2 - p1;
+
+    return standardPosition;
+
+    // var tunneledPosition = (p2 - max) - (p1 - min);
+    //
+    // if (Math.abs(tunneledPosition) < Math.abs(standardPosition)) {
+    //     return tunneledPosition;
+    // }
+    // else {
+    //     return standardPosition;
+    // }
+}
+
 function drawFood(food) {
     graph.strokeStyle = 'hsl(' + food.hue + ', 100%, 45%)';
     graph.fillStyle = 'hsl(' + food.hue + ', 100%, 50%)';
     graph.lineWidth = foodConfig.border;
 
-    var xpos = food.x - player.x + screenWidth / 2;
-    var ypos = food.y - player.y + screenHeight / 2;
+    // var xpos = food.x - player.x + screenWidth / 2;
+    // var ypos = food.y - player.y + screenHeight / 2;
+    var xpos = getPosition(player.x, food.x, 0, screenWidth) + screenWidth / 2;
+    var ypos = getPosition(player.y, food.y, 0, screenHeight) + screenHeight / 2;
 
     drawCircle(xpos, ypos, food.radius);
 

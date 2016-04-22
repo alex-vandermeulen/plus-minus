@@ -204,23 +204,6 @@ function movePlayer(player) {
                 }
             }
         }
-        // if(player.cells.length > i) {
-        //     var borderCalc = player.cells[i].radius / 1.5;
-        //     if (player.cells[i].x > c.gameWidth - borderCalc) {
-        //         player.cells[i].x = c.gameWidth - borderCalc;
-        //     }
-        //     if (player.cells[i].y > c.gameHeight - borderCalc) {
-        //         player.cells[i].y = c.gameHeight - borderCalc;
-        //     }
-        //     if (player.cells[i].x < borderCalc) {
-        //         player.cells[i].x = borderCalc;
-        //     }
-        //     if (player.cells[i].y < borderCalc) {
-        //         player.cells[i].y = borderCalc;
-        //     }
-        //     x += player.cells[i].x;
-        //     y += player.cells[i].y;
-        // }
         if(player.cells.length > i) {
             // var borderCalc = player.cells[i].radius / 1.5;
             if (player.cells[i].x > c.gameWidth) {
@@ -537,6 +520,17 @@ function loadLeaderBoardFromRedis()
     });
 }
 
+// function isVisible(user, x, y, maxX, maxY) {
+//     return x > user.x - user.screenWidth/2 - 20 &&
+//            x < user.x + user.screenWidth/2 + 20 &&
+//            y > user.y - user.screenHeight/2 - 20 &&
+//            y < user.y + user.screenHeight/2 + 20;
+// }
+
+function isVisible(user, x, y, maxX, maxY) {
+    return true;
+}
+
 function sendUpdates() {
     users.forEach( function(u) {
         // center the view if x/y is undefined, this will happen for spectators
@@ -545,10 +539,7 @@ function sendUpdates() {
 
         var visibleFood  = food
             .map(function(f) {
-                if ( f.x > u.x - u.screenWidth/2 - 20 &&
-                    f.x < u.x + u.screenWidth/2 + 20 &&
-                    f.y > u.y - u.screenHeight/2 - 20 &&
-                    f.y < u.y + u.screenHeight/2 + 20) {
+                if (isVisible(u, f.x, f.y, c.gameWidth, c.gameHeight)) {
                     return f;
                 }
             })
@@ -558,11 +549,8 @@ function sendUpdates() {
             .map(function(f) {
                 for(var z=0; z<f.cells.length; z++)
                 {
-                    if ( f.cells[z].x+f.cells[z].radius > u.x - u.screenWidth/2 - 20 &&
-                        f.cells[z].x-f.cells[z].radius < u.x + u.screenWidth/2 + 20 &&
-                        f.cells[z].y+f.cells[z].radius > u.y - u.screenHeight/2 - 20 &&
-                        f.cells[z].y-f.cells[z].radius < u.y + u.screenHeight/2 + 20) {
-                        z = f.cells.lenth;
+                    if (isVisible(u, f.cells[z].x, f.cells[z].y, c.gameWidth, c.gameHeight)) {
+                        z = f.cells.length;
                         if(f.id !== u.id) {
                             return {
                                 id: f.id,
