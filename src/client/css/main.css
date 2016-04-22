@@ -22,6 +22,10 @@ div {
     -ms-user-select: none; /* IE10+ */
 }
 
+.header img, .footer img {
+    width: 100%;
+}
+
 #scuba {
     position: absolute;
     height: 800px;
