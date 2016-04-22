@@ -221,24 +221,24 @@ function drawCircle(centerX, centerY, radius) {
 }
 
 function getPosition(p1, p2, min, max) {
-    var standardVector = p2 - p1;
+    var standardPosition = p2 - p1;
 
-    var tunneledVectorCandidate1 = (p2 - max) - (p1 - min);
-    var tunneledVectorCandidate2 = (p2 - min) - (p1 - max);
+    var tunneledPositionCandidate1 = (p2 - max) - (p1 - min);
+    var tunneledPositionCandidate2 = (p2 - min) - (p1 - max);
 
-    var tunneledVector;
-    if (Math.abs(tunneledVectorCandidate1) <= Math.abs(tunneledVectorCandidate2)) {
-        tunneledVector = tunneledVectorCandidate1;
+    var tunneledPosition;
+    if (Math.abs(tunneledPositionCandidate1) <= Math.abs(tunneledPositionCandidate2)) {
+        tunneledPosition = tunneledPositionCandidate1;
     }
     else {
-        tunneledVector = tunneledVectorCandidate2;
+        tunneledPosition = tunneledPositionCandidate2;
     }
 
-    if (Math.abs(standardVector) <= Math.abs(tunneledVector)) {
-        return standardVector;
+    if (Math.abs(standardPosition) <= Math.abs(tunneledPosition)) {
+        return standardPosition;
     }
     else {
-        return tunneledVector;
+        return tunneledPosition;
     }
 }
 
