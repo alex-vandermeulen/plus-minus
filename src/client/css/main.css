@@ -30,7 +30,7 @@ div {
 #scuba {
     position: absolute;
     height: 800px;
-    top: 100px;
+    top: 0;
     left: 450px;
 }
 
