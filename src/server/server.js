@@ -183,19 +183,36 @@ function movePlayer(player) {
                 }
             }
         }
+        // if(player.cells.length > i) {
+        //     var borderCalc = player.cells[i].radius / 1.5;
+        //     if (player.cells[i].x > c.gameWidth - borderCalc) {
+        //         player.cells[i].x = c.gameWidth - borderCalc;
+        //     }
+        //     if (player.cells[i].y > c.gameHeight - borderCalc) {
+        //         player.cells[i].y = c.gameHeight - borderCalc;
+        //     }
+        //     if (player.cells[i].x < borderCalc) {
+        //         player.cells[i].x = borderCalc;
+        //     }
+        //     if (player.cells[i].y < borderCalc) {
+        //         player.cells[i].y = borderCalc;
+        //     }
+        //     x += player.cells[i].x;
+        //     y += player.cells[i].y;
+        // }
         if(player.cells.length > i) {
-            var borderCalc = player.cells[i].radius / 1.5;
-            if (player.cells[i].x > c.gameWidth - borderCalc) {
-                player.cells[i].x = c.gameWidth - borderCalc;
+            // var borderCalc = player.cells[i].radius / 1.5;
+            if (player.cells[i].x > c.gameWidth) {
+                player.cells[i].x = 0;
             }
-            if (player.cells[i].y > c.gameHeight - borderCalc) {
-                player.cells[i].y = c.gameHeight - borderCalc;
+            if (player.cells[i].y > c.gameHeight) {
+                player.cells[i].y = 0;
             }
-            if (player.cells[i].x < borderCalc) {
-                player.cells[i].x = borderCalc;
+            if (player.cells[i].x < 0) {
+                player.cells[i].x = c.gameWidth;
             }
-            if (player.cells[i].y < borderCalc) {
-                player.cells[i].y = borderCalc;
+            if (player.cells[i].y < 0) {
+                player.cells[i].y = c.gameHeight;
             }
             x += player.cells[i].x;
             y += player.cells[i].y;
