@@ -7,23 +7,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
     <!-- CSS -->
     <link rel="stylesheet" href="css/main.css" />
-
 </head>
 <body>
+<div class="header">
+    <img src="img/nav.svg">
+</div>
 <div id="gameAreaWrapper">
     <div id="status"><span class="title">Leader Board</span></div>
     <div id="hiddenStatus">Show Leader Board</div>
     <canvas tabindex="1" id="cvs"></canvas>
 </div>
 <div id="startMenuWrapper">
+    <img id="scuba" src="img/scuba.svg">
     <div id="startMenu">
-        <p>4±4</p>
+        <div class="orange">4±4</div>
+        <div class="lost">L0st en cybor spage?!</div>
+        <div class="desc">I know this can be frustrating, take this opportunity to blow off some steam and play a game.</div>
         <input type="text" tabindex="0" autofocus placeholder="Enter your name here" id="playerNameInput" maxlength="25" />
-        <b class="input-error">Name must be alphanumeric characters only!</b>
-        <br>
-        <br>
+        <div class="info">Please use alphanumeric characters only</div>
         <button id="startButton">Play</button>
     </div>
+</div>
+<div class="footer">
+    <img src="img/footer.svg">
 </div>
 <!-- JS -->
 <script src="//code.jquery.com/jquery-2.2.0.min.js"></script>

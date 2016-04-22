@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="2560px" height="496px" viewBox="0 0 2560 496" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 3.7.1 (28215) - http://www.bohemiancoding.com/sketch -->
+    <title>Footer</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Footer">
+            <rect id="Rectangle-10" fill="#212121" x="0" y="0" width="2560" height="411"></rect>
+            <rect id="Rectangle-10" fill="#111111" x="0" y="411" width="2560" height="85"></rect>
+            <text id="360-Park-Avenue-Sout" font-family="Helvetica-Light, Helvetica" font-size="18" font-weight="300" fill="#9E9E9E">
+                <tspan x="1560" y="88">360 Park Avenue South, 19th Floor</tspan>
+                <tspan x="1560" y="113">New York, NY 10010</tspan>
+            </text>
+            <text id="info@magnetic.com" font-family="Helvetica-Light, Helvetica" font-size="18" font-weight="300" fill="#9E9E9E">
+                <tspan x="1560" y="157">info@magnetic.com</tspan>
+            </text>
+            <text id="(212)-757-3189" font-family="Helvetica-Light, Helvetica" font-size="18" font-weight="300" fill="#9E9E9E">
+                <tspan x="1560" y="200">(212) 757-3189</tspan>
+            </text>
+            <text id="Privacy-Policy" font-family="Helvetica" font-size="16" font-weight="normal" fill="#9E9E9E">
+                <tspan x="1529" y="452.200001">Privacy Policy</tspan>
+            </text>
+            <text id="Your-Ad-Choices" font-family="Helvetica" font-size="16" font-weight="normal" fill="#9E9E9E">
+                <tspan x="1650" y="452">Your Ad Choices</tspan>
+            </text>
+            <text id="Opt-Out" font-family="Helvetica" font-size="16" font-weight="normal" fill="#9E9E9E">
+                <tspan x="1785" y="452">Opt-Out</tspan>
+            </text>
+            <text id="Magnetic-is-a-techno" font-family="Helvetica" font-size="16" font-weight="normal">
+                <tspan x="710" y="82" fill="#757575">Magnetic is a technology company with a </tspan>
+                <tspan x="710" y="106" fill="#757575">marketing platform for enterprises, brands and </tspan>
+                <tspan x="710" y="130" fill="#757575">agencies. Our </tspan>
+                <tspan x="814.054688" y="130" fill="#9E9E9E">prospecting</tspan>
+                <tspan x="896.773438" y="130" fill="#757575">, </tspan>
+                <tspan x="905.664062" y="130" fill="#9E9E9E">remarketing</tspan>
+                <tspan x="990.140625" y="130" fill="#757575"> </tspan>
+                <tspan x="710" y="154" fill="#757575">and</tspan>
+                <tspan x="736.695312" y="154" fill="#9E9E9E">merchandising</tspan>
+                <tspan x="840.75" y="154" fill="#757575"> solutions help marketers </tspan>
+                <tspan x="710" y="178" fill="#757575">find, keep and bring back customers across </tspan>
+                <tspan x="710" y="202" fill="#757575">channels and devices. These solutions are </tspan>
+                <tspan x="710" y="226" fill="#757575">powered by our unique data including </tspan>
+                <tspan x="710" y="250" fill="#757575">purchase intent and behavioral insights.</tspan>
+            </text>
+            <text id="©-2011---2016-Magnet" font-family="Helvetica" font-size="16" font-weight="normal" fill="#757575">
+                <tspan x="710" y="452">© 2011 - 2016 Magnetic Media Online, Inc. All rights reserved.</tspan>
+            </text>
+            <text id="Recent-Posts" font-family="Helvetica-Light, Helvetica" font-size="24" font-weight="300" fill="#9E9E9E">
+                <tspan x="1113" y="89">Recent Posts</tspan>
+            </text>
+            <text id="Mother’s-Day-Marketi" font-family="Helvetica" font-size="16" font-weight="normal">
+                <tspan x="1133" y="147" fill="#9E9E9E">Mother’s Day Marketing and Digital Travel</tspan>
+                <tspan x="1133" y="171" fill="#757575">April 20, 2016</tspan>
+            </text>
+            <text id="Magnetic-CEO-+-Marke" font-family="Helvetica" font-size="16" font-weight="normal" line-spacing="27">
+                <tspan x="1133" y="215" fill="#9E9E9E">Magnetic CEO + Marketing Land</tspan>
+                <tspan x="1133" y="242" fill="#757575">April 19, 2016</tspan>
+            </text>
+            <text id="Magento-|-Imagine-Co" font-family="Helvetica" font-size="16" font-weight="normal" line-spacing="27">
+                <tspan x="1133" y="283" fill="#9E9E9E">Magento | Imagine Commerce 2016 Recap</tspan>
+                <tspan x="1133" y="310" fill="#6D6D6D">April 18, 2016</tspan>
+            </text>
+            <polyline id="Path-19" stroke="#4B4B4B" stroke-width="2" points="1116.86852 144.082758 1120.61088 147.825118 1116.4802 151.9558"></polyline>
+            <polyline id="Path-19-Copy" stroke="#4B4B4B" stroke-width="2" points="1117.38832 211 1121.13068 214.742361 1117 218.873042"></polyline>
+            <polyline id="Path-19-Copy" stroke="#4B4B4B" stroke-width="2" points="1117.38832 278 1121.13068 281.742361 1117 285.873042"></polyline>
+        </g>
+    </g>
+</svg>
