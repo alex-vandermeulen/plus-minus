@@ -220,19 +220,30 @@ function drawCircle(centerX, centerY, radius) {
     graph.fill();
 }
 
+// function getPosition(p1, p2, min, max) {
+//     var standardVector = p2 - p1;
+//
+//     var tunneledVectorCandidate1 = (p2 - max) - (p1 - min);
+//     var tunneledVectorCandidate2 = (p2 - min) - (p1 - max);
+//
+//     var tunneledVector;
+//     if (Math.abs(tunneledVectorCandidate1) <= Math.abs(tunneledVectorCandidate2)) {
+//         tunneledVector = tunneledVectorCandidate1;
+//     }
+//     else {
+//         tunneledVector = tunneledVectorCandidate2;
+//     }
+//
+//     if (Math.abs(standardVector) <= Math.abs(tunneledVector)) {
+//         return standardVector;
+//     }
+//     else {
+//         return tunneledVector;
+//     }
+// }
+
 function getPosition(p1, p2, min, max) {
-    var standardPosition = p2 - p1;
-
-    return standardPosition;
-
-    // var tunneledPosition = (p2 - max) - (p1 - min);
-    //
-    // if (Math.abs(tunneledPosition) < Math.abs(standardPosition)) {
-    //     return tunneledPosition;
-    // }
-    // else {
-    //     return standardPosition;
-    // }
+    return p2 - p1;
 }
 
 function drawFood(food) {
