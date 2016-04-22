@@ -30,5 +30,6 @@
     "massLossRate": 1,
     "mergeTimer": 15,
     "playerRadius": 50,
-    "foodRadius": 16
+    "foodRadius": 16,
+    "redisUrl": "redis://rediscloud:KzAN5cJPF1LbhOsV@pub-redis-18340.us-east-1-2.5.ec2.garantiadata.com:18340"
 }

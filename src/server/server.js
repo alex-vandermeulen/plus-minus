@@ -10,6 +10,10 @@ var SAT = require('sat');
 // Import game settings.
 var c = require('../../config.json');
 
+// Redis Cloud stuff
+var redis = require('redis');
+var client = redis.createClient(c.redisUrl, {no_ready_check: true});
+
 // Import utilities.
 var util = require('./lib/util');
 
@@ -28,8 +32,12 @@ var virus = [];
 var sockets = {};
 var gameCharge = 0;
 
+var MAX_LEADER_BOARD_SIZE = 10;
+
 var leaderboard = [];
-var leaderboardChanged = false;
+loadLeaderBoardFromRedis();
+var leaderboardChanged = true;
+var lastLeaderboardString = "";
 
 var V = SAT.Vector;
 var C = SAT.Circle;
@@ -38,72 +46,65 @@ var initMassLog = util.log(c.defaultPlayerMass, c.slowBase);
 
 app.use(express.static(__dirname + '/../client'));
 
-/*function moveFood(food) {
-    // our starting acceleration this frame
-    var totalAccelerationX = 0;
-    var totalAccelerationY = 0;
-
-    // for each player
-    for (var i = 0; i < users.length; i++) {
-        var player = users[i];
-        // find the distance between the particle and the player
-        var vectorX = player.x - food.x;
-        var vectorY = player.y - food.y;
-
-        // calculate the force via MAGIC and HIGH SCHOOL SCIENCE!
-        var force = player.mass / Math.pow(vectorX*vectorX+vectorY*vectorY,1.5);
-
-        // add to the total acceleration the force adjusted by distance
-        totalAccelerationX += vectorX * force;
-        totalAccelerationY += vectorY * force;
-    }
-
-    // update our particle's acceleration
-    food.acceleration = new Vector(totalAccelerationX, totalAccelerationY);
-}*/
 
 function moveFood(food) {
-    //simple
-    var deltaX = 0;
-    var deltaY = 0;
+    var totalDeltaX = 0;
+    var totalDeltaY = 0;
+    var desX = food.x;
+    var desY = food.y;
+
     // for each player
     for (var i = 0; i < users.length; i++) {
         var player = users[i];
+
+        var deltaX = 0;
+        var deltaY = 0;
+
         // find the distance between the particle and the player
         var vectorX = player.x - food.x;
         var vectorY = player.y - food.y;
-        if (vectorX*vectorX + vectorY*vectorY <= 80000) {
-            deltaX = vectorX / 100;
-            deltaY = vectorY / 100;
-        }
-        if (player.chargeTotal * food.charge === 0) {
 
-        } else if (player.chargeTotal * food.charge < 0) {
-            food.x = food.x + deltaX;
-            food.y = food.y + deltaY;
-        } else {
-            food.x = food.x - deltaX;
-            food.y = food.y - deltaY;
-        }
+        var distance = vectorX*vectorX+vectorY*vectorY;
 
-        if (food.x < 0) {
-            food.x = 0;
-        } else if (food.x > c.gameWidth) {
-            food.x = c.gameWidth;
-        }
-        if (food.y < 0) {
-            food.y = 0;
-        } else if (food.y > c.gameHeight) {
-            food.y = c.gameHeight;
-        }
+        if (distance > 1000000) continue;
+        // calculate the force
+        var force = player.chargeTotal * food.charge / distance / 5;
 
-        // calculate the force via MAGIC and HIGH SCHOOL SCIENCE!
-        //var force = player.mass / Math.pow(vectorX*vectorX+vectorY*vectorY,1.5);
+        // calculate the acceleration
+        var accelX = force * vectorX;
+        var accelY = force * vectorY;
 
-        // add to the total acceleration the force adjusted by distance
-        //totalAccelerationX += vectorX * force;
-        //totalAccelerationY += vectorY * force;
+        // calculate the delta
+        deltaX = accelX * 20;
+        deltaY = accelY * 20;
+        totalDeltaX -= deltaX;
+        totalDeltaY -= deltaY;
+
     }
+    // cap the total delta
+    if (Math.abs(totalDeltaX) > 6) {
+        totalDeltaX = totalDeltaX > 0 ? 6 : -6;
+    }
+    if (Math.abs(totalDeltaY) > 6) {
+        totalDeltaY = totalDeltaY > 0 ? 6 : -6;
+    }
+    // Move the combined delta to the food's position
+    desX += totalDeltaX;
+    desY += totalDeltaY;
+
+    // Keep food inside the game board
+    if (desX < 0 + food.radius) {
+        desX = 0 + food.radius;
+    } else if (desX > c.gameWidth - food.radius) {
+        desX = c.gameWidth - food.radius;
+    }
+    if (desY < 0 + food.radius) {
+        desY = 0 + food.radius;
+    } else if (desY> c.gameHeight - food.radius) {
+        desY = c.gameHeight - food.radius;
+    }
+    food.x = desX;
+    food.y = desY;
 }
 
 function addFood(toAdd) {
@@ -122,7 +123,7 @@ function addFood(toAdd) {
             radius: radius,
             mass: Math.random() + 2,
             charge: charge,
-            hue: 270 + (charge * 90)
+            hue: 118 - (charge * 80)
         });
     }
 }
@@ -208,7 +209,7 @@ function movePlayer(player) {
             }
         }
         if(player.cells.length > i) {
-            var borderCalc = player.cells[i].radius / 3;
+            var borderCalc = player.cells[i].radius / 1.5;
             if (player.cells[i].x > c.gameWidth - borderCalc) {
                 player.cells[i].x = c.gameWidth - borderCalc;
             }
@@ -325,7 +326,7 @@ io.on('connection', function (socket) {
         target: {
             x: 0,
             y: 0
-        },
+        }
     };
 
     socket.on('gotit', function (player) {
@@ -671,42 +672,77 @@ function moveloop() {
 
 function gameloop() {
     if (users.length > 0) {
-        users.sort( function(a, b) { return b.massTotal - a.massTotal; });
+        users.sort( function(a, b) { return Math.abs(b.chargeTotal) - Math.abs(a.chargeTotal); });
 
         var topUsers = [];
 
-        for (var i = 0; i < Math.min(10, users.length); i++) {
+        for (var i = 0; i < Math.min(MAX_LEADER_BOARD_SIZE, users.length); i++) {
             if(users[i].type == 'player') {
                 topUsers.push({
                     id: users[i].id,
-                    name: users[i].name
+                    name: users[i].name,
+                    charge: Math.abs(users[i].chargeTotal)
                 });
             }
         }
-        if (isNaN(leaderboard) || leaderboard.length !== topUsers.length) {
-            leaderboard = topUsers;
-            leaderboardChanged = true;
-        }
-        else {
-            for (i = 0; i < leaderboard.length; i++) {
-                if (leaderboard[i].id !== topUsers[i].id) {
-                    leaderboard = topUsers;
-                    leaderboardChanged = true;
-                    break;
-                }
-            }
-        }
-        for (i = 0; i < users.length; i++) {
-            for(var z=0; z < users[i].cells.length; z++) {
-                if (users[i].cells[z].mass * (1 - (c.massLossRate / 1000)) > c.defaultPlayerMass) {
-                    var massLoss = users[i].cells[z].mass * (1 - (c.massLossRate / 1000));
-                    users[i].massTotal -= users[i].cells[z].mass - massLoss;
-                    users[i].cells[z].mass = massLoss;
-                }
-            }
-        }
+        updateLeaderBoard(topUsers);
     }
     balanceMass();
+}
+
+function updateLeaderBoard(topUsers) {
+    // console.log("Top 10 users:", topUsers);
+    if (leaderboard.length === 0) {
+        leaderboard = topUsers;
+        leaderboardChanged = true;
+    }
+    else {
+        leaderboard = leaderboard.concat(topUsers);
+        // console.log("Potential leaderboard:", leaderboard);
+        var dedupedLeaderboard = {};
+        for (var i = 0; i < leaderboard.length; i++)
+        {
+            var key = leaderboard[i].name + "," + leaderboard[i].id;
+            var score = leaderboard[i];
+
+            if (typeof dedupedLeaderboard[key] === 'undefined') {
+                dedupedLeaderboard[key] = score;
+            }
+            else if (dedupedLeaderboard[key].charge < score.charge) {
+                dedupedLeaderboard[key] = score;
+            }
+        }
+
+        var keys = Object.keys(dedupedLeaderboard);
+        var finalLeaderboard = [];
+        for (i = 0; i < keys.length; i++) {
+            finalLeaderboard.push(dedupedLeaderboard[keys[i]]);
+        }
+        finalLeaderboard.sort( function(a, b) { return b.charge - a.charge; });
+        finalLeaderboard = finalLeaderboard.slice(0, MAX_LEADER_BOARD_SIZE);
+
+        leaderboard = finalLeaderboard;
+        sendLeaderBoardToRedis();
+        leaderboardChanged = true;
+    }
+}
+
+function sendLeaderBoardToRedis()
+{
+    var leaderboardString = JSON.stringify(leaderboard);
+    if (leaderboardString !== lastLeaderboardString) {
+        client.set("leaderboard", leaderboardString);
+        lastLeaderboardString = leaderboardString;
+    }
+}
+
+function loadLeaderBoardFromRedis()
+{
+    client.get("leaderboard", function(err, reply) {
+        if (reply) {
+            leaderboard = JSON.parse(reply.toString());
+        }
+    });
 }
 
 function sendUpdates() {

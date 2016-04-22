@@ -19,10 +19,6 @@ if ( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
     mobile = true;
 }
 
-function pClicked() {
-    console.log("here");
-}
-
 function startGame() {
     playerName = playerNameInput.value.replace(/(<([^>]+)>)/ig, '').substring(0,25);
     playerType = 'player';
@@ -160,17 +156,19 @@ function setupSocket(socket) {
             status += '<br />';
             if (leaderboard[i].id == player.id){
                 if(leaderboard[i].name.length !== 0)
-                    status += '<span class="me">' + (i + 1) + '. ' + leaderboard[i].name + "</span>";
+                    status += '<span class="me">' + (i + 1) + '. ' + leaderboard[i].name + ": (" + leaderboard[i].charge + ")</span>";
                 else
-                    status += '<span class="me">' + (i + 1) + ". An unnamed cell</span>";
+                    status += '<span class="me">' + (i + 1) + ". An unnamed cell: (" + leaderboard[i].charge + ")</span>";
             } else {
                 if(leaderboard[i].name.length !== 0)
-                    status += (i + 1) + '. ' + leaderboard[i].name;
+                    status += (i + 1) + '. ' + leaderboard[i].name + ": (" + leaderboard[i].charge + ")";
                 else
-                    status += (i + 1) + '. An unnamed cell';
+                    status += (i + 1) + '. An unnamed cell: (' + leaderboard[i].charge + ")";
             }
         }
-        //status += '<br />Players: ' + data.players;
+        status += "<br />";
+        status += "<br />You: " + Math.abs(player.cells[0].charge);
+        status += "<br />Players Online: " + data.players;
         document.getElementById('status').innerHTML = status;
     });
 
@@ -280,12 +278,12 @@ function drawPlayers(order) {
         }
 
         if(cellCurrent.charge > 0) { //red
-            graph.strokeStyle = 'hsl(0, 100%, ' + darkerLuminosity + '%)';
-            graph.fillStyle = 'hsl(0, 100%, '+ luminosity + '%)';
+            graph.strokeStyle = 'hsl(38, 96%, ' + darkerLuminosity + '%)';
+            graph.fillStyle = 'hsl(38, 96%, '+ luminosity + '%)';
         }
         else if(cellCurrent.charge < 0) { //blue
-            graph.strokeStyle = 'hsl(180, 100%, ' + darkerLuminosity + '%)';
-            graph.fillStyle = 'hsl(180, 100%, '+ luminosity + '%)';
+            graph.strokeStyle = 'hsl(198, 76%, ' + darkerLuminosity + '%)';
+            graph.fillStyle = 'hsl(198, 76%, '+ luminosity + '%)';
         }
         else { //gray
             graph.strokeStyle = 'hsl(0, 0%, ' + darkerLuminosity + '%)';
