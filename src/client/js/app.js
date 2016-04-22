@@ -167,7 +167,7 @@ function setupSocket(socket) {
             }
         }
         status += "<br />";
-        status += "<br />You: " + Math.abs(player.cells[0].charge);
+        status += "<br /><span class='me'>You: " + Math.abs(player.cells[0].charge) + "</span>";
         status += "<br />Players Online: " + data.players;
         document.getElementById('status').innerHTML = status;
     });
