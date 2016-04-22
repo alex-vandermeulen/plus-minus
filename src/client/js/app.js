@@ -23,6 +23,9 @@ function startGame() {
     playerName = playerNameInput.value.replace(/(<([^>]+)>)/ig, '').substring(0,25);
     playerType = 'player';
 
+    screenWidth = window.innerWidth;
+    screenHeight = window.innerHeight;
+    
     document.getElementById('startMenuWrapper').style.display = 'none';
     document.getElementById('gameAreaWrapper').style.display = 'block';
     if (!socket) {
@@ -55,8 +58,8 @@ window.onload = function() {
 };
 
 // Canvas.
-var screenWidth = $("#startMenuWrapper").width();
-var screenHeight = $("#startMenuWrapper").height();
+var screenWidth = window.innerWidth;
+var screenHeight = window.innerHeight;
 
 var gameWidth = 0;
 var gameHeight = 0;
