@@ -17,13 +17,8 @@ var client = redis.createClient(c.redisUrl, {no_ready_check: true});
 // Import utilities.
 var util = require('./lib/util');
 
-// Import quadtree.
-var quadtree= require('../../quadtree');
-
 var args = {x : 0, y : 0, h : c.gameHeight, w : c.gameWidth, maxChildren : 1, maxDepth : 5};
 console.log(args);
-
-var tree = quadtree.QUAD.init(args);
 
 var users = [];
 var food = [];
@@ -210,38 +205,6 @@ function movePlayer(player) {
     player.y = y/player.cells.length;
 }
 
-function moveMass(mass) {
-    var deg = Math.atan2(mass.target.y, mass.target.x);
-    var deltaY = mass.speed * Math.sin(deg);
-    var deltaX = mass.speed * Math.cos(deg);
-
-    mass.speed -= 0.5;
-    if(mass.speed < 0) {
-        mass.speed = 0;
-    }
-    if (!isNaN(deltaY)) {
-        mass.y += deltaY;
-    }
-    if (!isNaN(deltaX)) {
-        mass.x += deltaX;
-    }
-
-    var borderCalc = mass.radius + 5;
-
-    if (mass.x > c.gameWidth - borderCalc) {
-        mass.x = c.gameWidth - borderCalc;
-    }
-    if (mass.y > c.gameHeight - borderCalc) {
-        mass.y = c.gameHeight - borderCalc;
-    }
-    if (mass.x < borderCalc) {
-        mass.x = borderCalc;
-    }
-    if (mass.y < borderCalc) {
-        mass.y = borderCalc;
-    }
-}
-
 function balanceMass() {
     var totalMass = food.length * c.foodMass +
         users
@@ -255,14 +218,10 @@ function balanceMass() {
     var foodToRemove = -Math.max(foodDiff, maxFoodDiff);
 
     if (foodToAdd > 0) {
-        //console.log('[DEBUG] Adding ' + foodToAdd + ' food to level!');
         addFood(foodToAdd);
-        //console.log('[DEBUG] Mass rebalanced!');
     }
     else if (foodToRemove > 0) {
-        //console.log('[DEBUG] Removing ' + foodToRemove + ' food from level!');
         removeFood(foodToRemove);
-        //console.log('[DEBUG] Mass rebalanced!');
     }
 }
 
@@ -385,11 +344,12 @@ io.on('connection', function (socket) {
             currentPlayer.target = target;
         }
     });
+    
 });
 
 function tickPlayer(currentPlayer) {
     if(currentPlayer.lastHeartbeat < new Date().getTime() - c.maxHeartbeatInterval) {
-        sockets[currentPlayer.id].emit('kick', 'Last heartbeat received... It was over ' + c.maxHeartbeatInterval + '!');
+        sockets[currentPlayer.id].emit('kick', 'Last heartbeat received... It was over ' + c.maxHeartbeatInterval + '.');
         sockets[currentPlayer.id].disconnect();
     }
 
@@ -402,29 +362,6 @@ function tickPlayer(currentPlayer) {
     function deleteFood(f) {
         food[f] = {};
         food.splice(f, 1);
-    }
-
-    function check(user) {
-        for(var i=0; i<user.cells.length; i++) {
-            if(user.cells[i].mass > 10 && user.id !== currentPlayer.id) {
-                var response = new SAT.Response();
-                var collided = SAT.testCircleCircle(playerCircle,
-                    new C(new V(user.cells[i].x, user.cells[i].y), user.cells[i].radius),
-                    response);
-                if (collided) {
-                    response.aUser = currentCell;
-                    response.bUser = {
-                        id: user.id,
-                        name: user.name,
-                        x: user.cells[i].x,
-                        y: user.cells[i].y,
-                        num: i,
-                        mass: user.cells[i].mass
-                    };
-                    playerCollisions.push(response);
-                }
-            }
-        }
     }
 
     function collisionCheck(collision) {
@@ -449,6 +386,8 @@ function tickPlayer(currentPlayer) {
         }
     }
 
+
+
     for(var z=0; z<currentPlayer.cells.length; z++) {
         var currentCell = currentPlayer.cells[z];
         var playerCircle = new C(
@@ -466,12 +405,12 @@ function tickPlayer(currentPlayer) {
 
         foodEaten.forEach(deleteFood);
 
+        if(typeof(currentCell.speed) == "undefined")
+            currentCell.speed = 6.25;
         
         currentCell.charge += chargeChange;
         currentPlayer.chargeTotal += chargeChange;
-
-        tree.clear();
-        tree.insert(users);
+        
         var playerCollisions = [];
 
         playerCollisions.forEach(collisionCheck);

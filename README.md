@@ -10,8 +10,6 @@
 
 A simple but powerful Agar.IO clone built with socket.IO and HTML5 canvas on top of NodeJS.
 
-![Image](screenshot.png)
-
 ## Live Demos
 An updated and live list of live demos can be found on the [Live Demos wiki page](https://github.com/huytd/agar.io-clone/wiki/Live-Demos).
 
