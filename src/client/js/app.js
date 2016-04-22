@@ -220,31 +220,31 @@ function drawCircle(centerX, centerY, radius) {
     graph.fill();
 }
 
-// function getPosition(p1, p2, min, max) {
-//     var standardVector = p2 - p1;
-//
-//     var tunneledVectorCandidate1 = (p2 - max) - (p1 - min);
-//     var tunneledVectorCandidate2 = (p2 - min) - (p1 - max);
-//
-//     var tunneledVector;
-//     if (Math.abs(tunneledVectorCandidate1) <= Math.abs(tunneledVectorCandidate2)) {
-//         tunneledVector = tunneledVectorCandidate1;
-//     }
-//     else {
-//         tunneledVector = tunneledVectorCandidate2;
-//     }
-//
-//     if (Math.abs(standardVector) <= Math.abs(tunneledVector)) {
-//         return standardVector;
-//     }
-//     else {
-//         return tunneledVector;
-//     }
-// }
-
 function getPosition(p1, p2, min, max) {
-    return p2 - p1;
+    var standardVector = p2 - p1;
+
+    var tunneledVectorCandidate1 = (p2 - max) - (p1 - min);
+    var tunneledVectorCandidate2 = (p2 - min) - (p1 - max);
+
+    var tunneledVector;
+    if (Math.abs(tunneledVectorCandidate1) <= Math.abs(tunneledVectorCandidate2)) {
+        tunneledVector = tunneledVectorCandidate1;
+    }
+    else {
+        tunneledVector = tunneledVectorCandidate2;
+    }
+
+    if (Math.abs(standardVector) <= Math.abs(tunneledVector)) {
+        return standardVector;
+    }
+    else {
+        return tunneledVector;
+    }
 }
+
+// function getPosition(p1, p2, min, max) {
+//     return p2 - p1;
+// }
 
 function drawFood(food) {
     graph.strokeStyle = 'hsl(' + food.hue + ', 100%, 45%)';
@@ -253,8 +253,8 @@ function drawFood(food) {
 
     // var xpos = food.x - player.x + screenWidth / 2;
     // var ypos = food.y - player.y + screenHeight / 2;
-    var xpos = getPosition(player.x, food.x, 0, screenWidth) + screenWidth / 2;
-    var ypos = getPosition(player.y, food.y, 0, screenHeight) + screenHeight / 2;
+    var xpos = getPosition(player.x, food.x, 0, gameWidth) + screenWidth / 2;
+    var ypos = getPosition(player.y, food.y, 0, gameHeight) + screenHeight / 2;
 
     drawCircle(xpos, ypos, food.radius);
 
@@ -423,6 +423,11 @@ function gameLoop() {
         graph.fillStyle = backgroundColor;
         graph.fillRect(0, 0, screenWidth, screenHeight);
 
+        // for (var i=0; i<foods.length; i++) {
+        //     var food1, food2, food3, food4 = foods[i];
+        //
+        //     food2.x = food2.x - c.
+        // }
         foods.forEach(drawFood);
 
         var orderMass = [];
