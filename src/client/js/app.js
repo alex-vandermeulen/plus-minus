@@ -23,12 +23,7 @@ function startGame() {
     playerName = playerNameInput.value.replace(/(<([^>]+)>)/ig, '').substring(0,25);
     playerType = 'player';
 
-    // screenWidth = document.getElementById('startMenuWrapper').style.width;
-    screenHeight = document.getElementById('startMenuWrapper').style.height;
-    screenWidth = $("#startMenuWrapper").width();
-    console.log(document.getElementById('startMenuWrapper'), screenWidth, screenHeight);
-
-    //document.getElementById('startMenuWrapper').style.display = 'none';
+    document.getElementById('startMenuWrapper').style.display = 'none';
     document.getElementById('gameAreaWrapper').style.display = 'block';
     if (!socket) {
         socket = io({query:"type=" + playerType});
@@ -60,9 +55,8 @@ window.onload = function() {
 };
 
 // Canvas.
-var screenWidth = document.getElementById('startMenuWrapper').width;
-var screenHeight = document.getElementById('startMenuWrapper').height;
-console.log(document.getElementById('startMenuWrapper'), screenWidth, screenHeight);
+var screenWidth = $("#startMenuWrapper").width();
+var screenHeight = $("#startMenuWrapper").height();
 
 var gameWidth = 0;
 var gameHeight = 0;
