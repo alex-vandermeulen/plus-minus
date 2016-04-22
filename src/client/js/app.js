@@ -40,6 +40,20 @@ function startGame() {
 window.onload = function() {
     document.getElementById('startButton').onclick = function () {
         startGame();
+
+        var $status = $("#status");
+        var $hiddenStatus = $("#hiddenStatus");
+        $hiddenStatus.hide();
+
+        $status.on("click touchstart", function(){
+            $(this).hide();
+            $hiddenStatus.show();
+        });
+
+        $hiddenStatus.on("click touchstart", function(){
+            $(this).hide();
+            $status.show();
+        });
     };
 };
 
@@ -151,7 +165,7 @@ function setupSocket(socket) {
 
     socket.on('leaderboard', function (data) {
         leaderboard = data.leaderboard;
-        var status = '<span class="title">Leaderboard</span>';
+        var status = '<span class="title">Leader Board</span>';
         for (var i = 0; i < leaderboard.length; i++) {
             status += '<br />';
             if (leaderboard[i].id == player.id){
