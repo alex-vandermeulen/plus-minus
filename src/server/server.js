@@ -86,15 +86,15 @@ function moveFood(food) {
     desY += totalDeltaY;
 
     // Keep food inside the game board
-    if (desX < 0 + food.radius) {
-        desX = 0 + food.radius;
-    } else if (desX > c.gameWidth - food.radius) {
-        desX = c.gameWidth - food.radius;
+    if (desX < 0) {
+        desX = c.gameWidth;
+    } else if (desX > c.gameWidth) {
+        desX = 0;
     }
-    if (desY < 0 + food.radius) {
-        desY = 0 + food.radius;
-    } else if (desY> c.gameHeight - food.radius) {
-        desY = c.gameHeight - food.radius;
+    if (desY < 0) {
+        desY = c.gameHeight;
+    } else if (desY > c.gameHeight) {
+        desY = 0;
     }
     food.x = desX;
     food.y = desY;
