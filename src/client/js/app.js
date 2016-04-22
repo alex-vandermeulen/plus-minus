@@ -398,7 +398,9 @@ function setupSocket(socket) {
                     status += (i + 1) + '. An unnamed cell: (' + leaderboard[i].charge + ")";
             }
         }
-        //status += '<br />Players: ' + data.players;
+        status += "<br />";
+        status += "<br />You: " + Math.abs(player.cells[0].charge);
+        status += "<br />Players Online: " + data.players;
         document.getElementById('status').innerHTML = status;
     });
 

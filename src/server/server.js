@@ -700,13 +700,14 @@ function gameloop() {
 }
 
 function updateLeaderBoard(topUsers) {
+    // console.log("Top 10 users:", topUsers);
     if (leaderboard.length === 0) {
         leaderboard = topUsers;
         leaderboardChanged = true;
     }
     else {
         leaderboard = leaderboard.concat(topUsers);
-
+        // console.log("Potential leaderboard:", leaderboard);
         var dedupedLeaderboard = {};
         for (var i = 0; i < leaderboard.length; i++)
         {
@@ -726,8 +727,8 @@ function updateLeaderBoard(topUsers) {
         for (i = 0; i < keys.length; i++) {
             finalLeaderboard.push(dedupedLeaderboard[keys[i]]);
         }
-        finalLeaderboard = finalLeaderboard.slice(0, MAX_LEADER_BOARD_SIZE);
         finalLeaderboard.sort( function(a, b) { return b.charge - a.charge; });
+        finalLeaderboard = finalLeaderboard.slice(0, MAX_LEADER_BOARD_SIZE);
 
         leaderboard = finalLeaderboard;
         sendLeaderBoardToRedis();
