@@ -61,7 +61,6 @@ var continuity = false;
 var startPingTime = 0;
 var toggleMassState = 0;
 var backgroundColor = '#FFFFFF';
-var lineColor = '#000000';
 
 var foodConfig = {
     border: 0
@@ -85,14 +84,9 @@ var player = {
 };
 
 var foods = [];
-var viruses = [];
-var fireFood = [];
 var users = [];
 var leaderboard = [];
 var target = {x: player.x, y: player.y};
-var reenviar = true;
-var directionLock = false;
-var directions = [];
 
 var c = document.getElementById('cvs');
 c.width = screenWidth; c.height = screenHeight;
@@ -173,7 +167,7 @@ function setupSocket(socket) {
     });
 
     // Handle movement.
-    socket.on('serverTellPlayerMove', function (userData, foodsList, massList, virusList) {
+    socket.on('serverTellPlayerMove', function (userData, foodsList) {
         var playerData;
         for(var i =0; i< userData.length; i++) {
             if(typeof(userData[i].id) == "undefined") {
@@ -195,17 +189,7 @@ function setupSocket(socket) {
         }
         users = userData;
         foods = foodsList;
-        viruses = virusList;
-        fireFood = massList;
     });
-
-    socket.on('kick', function (data) {
-        gameStart = false;
-        reason = data;
-        kicked = true;
-        socket.close();
-    });
-    
 }
 
 function drawCircle(centerX, centerY, radius) {
@@ -235,20 +219,6 @@ function drawFood(food) {
     graph.strokeText(foodText, xpos, ypos);
     graph.fillText(foodText, xpos, ypos);
     graph.font = 'bold 20px sans-serif';
-}
-
-function drawVirus(virus) {
-    graph.strokeStyle = virus.stroke;
-    graph.fillStyle = virus.fill;
-    graph.lineWidth = virus.strokeWidth;
-    drawCircle(virus.x - player.x + screenWidth / 2, virus.y - player.y + screenHeight / 2, virus.radius);
-}
-
-function drawFireFood(mass) {
-    graph.strokeStyle = 'hsl(' + mass.hue + ', 100%, 45%)';
-    graph.fillStyle = 'hsl(' + mass.hue + ', 100%, 50%)';
-    graph.lineWidth = playerConfig.border+10;
-    drawCircle(mass.x - player.x + screenWidth / 2, mass.y - player.y + screenHeight / 2, mass.radius-5, 18 + (~~(mass.mass/5)));
 }
 
 function drawPlayers(order) {
@@ -368,19 +338,15 @@ function valueInRange(min, max, value) {
 }
 
 function gameInput(mouse) {
-	if (!directionLock) {
-		target.x = mouse.clientX - screenWidth / 2;
-		target.y = mouse.clientY - screenHeight / 2;
-	}
+    target.x = mouse.clientX - screenWidth / 2;
+    target.y = mouse.clientY - screenHeight / 2;
 }
 
 function touchInput(touch) {
     touch.preventDefault();
     touch.stopPropagation();
-	if (!directionLock) {
-		target.x = touch.touches[0].clientX - screenWidth / 2;
-		target.y = touch.touches[0].clientY - screenHeight / 2;
-	}
+    target.x = touch.touches[0].clientX - screenWidth / 2;
+    target.y = touch.touches[0].clientY - screenHeight / 2;
 }
 
 window.requestAnimFrame = (function() {
@@ -419,8 +385,6 @@ function gameLoop() {
             graph.fillRect(0, 0, screenWidth, screenHeight);
             
             foods.forEach(drawFood);
-            fireFood.forEach(drawFireFood);
-            viruses.forEach(drawVirus);
             
             var orderMass = [];
             for(var i=0; i<users.length; i++) {
