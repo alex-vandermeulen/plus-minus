@@ -43,14 +43,14 @@ window.onload = function() {
 
         var $status = $("#status");
         var $hiddenStatus = $("#hiddenStatus");
-        $hiddenStatus.hide();
+        $status.hide();
 
-        $status.on("click touchstart", function(){
+        $status.click(function(){
             $(this).hide();
             $hiddenStatus.show();
         });
 
-        $hiddenStatus.on("click touchstart", function(){
+        $hiddenStatus.click(function(){
             $(this).hide();
             $status.show();
         });
