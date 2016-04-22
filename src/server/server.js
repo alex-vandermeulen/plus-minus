@@ -39,6 +39,27 @@ var initMassLog = util.log(c.defaultPlayerMass, c.slowBase);
 
 app.use(express.static(__dirname + '/../client'));
 
+function calculateVector(p1, p2, min, max) {
+    var standardVector = p2 - p1;
+
+    var tunneledVectorCandidate1 = (p2 - max) - (p1 - min);
+    var tunneledVectorCandidate2 = (p2 - min) - (p1 - max);
+
+    var tunneledVector;
+    if (Math.abs(tunneledVectorCandidate1) <= Math.abs(tunneledVectorCandidate2)) {
+        tunneledVector = tunneledVectorCandidate1;
+    }
+    else {
+        tunneledVector = tunneledVectorCandidate2;
+    }
+
+    if (Math.abs(standardVector) <= Math.abs(tunneledVector)) {
+        return standardVector;
+    }
+    else {
+        return tunneledVector;
+    }
+}
 
 function moveFood(food) {
     var totalDeltaX = 0;
@@ -54,8 +75,8 @@ function moveFood(food) {
         var deltaY = 0;
 
         // find the distance between the particle and the player
-        var vectorX = player.x - food.x;
-        var vectorY = player.y - food.y;
+        var vectorX = calculateVector(food.x, player.x, 0, c.gameWidth);
+        var vectorY = calculateVector(food.y, player.y, 0, c.gameHeight);
 
         var distance = vectorX*vectorX+vectorY*vectorY;
 
