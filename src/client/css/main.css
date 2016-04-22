@@ -123,6 +123,7 @@ div {
 
 #status .title {
     font-size: 25px;
+    font-weight: bold;
 }
 
 #status .me {
