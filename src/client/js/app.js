@@ -19,6 +19,10 @@ if ( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
     mobile = true;
 }
 
+function pClicked() {
+    console.log("here");
+}
+
 function startGame() {
     playerName = playerNameInput.value.replace(/(<([^>]+)>)/ig, '').substring(0,25);
     playerType = 'player';
@@ -29,7 +33,7 @@ function startGame() {
     document.getElementById('page-404').style.display = 'none';
     document.getElementById('gameAreaWrapper').style.display = 'block';
     if (!socket) {
-        socket = io({query:"type=" + type});
+        socket = io({query:"type=" + playerType});
         setupSocket(socket);
     }
     if (!animLoopHandle)
