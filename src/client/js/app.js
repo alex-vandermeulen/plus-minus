@@ -26,7 +26,7 @@ function startGame() {
     screenWidth = window.innerWidth;
     screenHeight = window.innerHeight;
 
-    document.getElementById('page-404').style.display = 'none';
+    document.getElementById('startMenuWrapper').style.display = 'none';
     document.getElementById('gameAreaWrapper').style.display = 'block';
     if (!socket) {
         socket = io({query:"type=" + playerType});
