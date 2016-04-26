@@ -11,8 +11,8 @@ var SAT = require('sat');
 var c = require('../../config.json');
 
 // Redis Cloud stuff
-var redis = require('redis');
-var client = redis.createClient(c.redisUrl, {no_ready_check: true});
+// var redis = require('redis');
+// var client = redis.createClient(c.redisUrl, {no_ready_check: true});
 
 // Import utilities.
 var util = require('./lib/util');
@@ -206,17 +206,17 @@ function movePlayer(player) {
         }
         if(player.cells.length > i) {
             // var borderCalc = player.cells[i].radius / 1.5;
-            if (player.cells[i].x > c.gameWidth) {
-                player.cells[i].x = 0;
+            if (player.cells[i].x >= c.gameWidth) {
+                player.cells[i].x = 1;
             }
-            if (player.cells[i].y > c.gameHeight) {
-                player.cells[i].y = 0;
+            if (player.cells[i].y >= c.gameHeight) {
+                player.cells[i].y = 1;
             }
-            if (player.cells[i].x < 0) {
-                player.cells[i].x = c.gameWidth;
+            if (player.cells[i].x <= 0) {
+                player.cells[i].x = c.gameWidth - 1;
             }
-            if (player.cells[i].y < 0) {
-                player.cells[i].y = c.gameHeight;
+            if (player.cells[i].y <= 0) {
+                player.cells[i].y = c.gameHeight - 1;
             }
             x += player.cells[i].x;
             y += player.cells[i].y;
@@ -504,20 +504,20 @@ function updateLeaderBoard(topUsers) {
 
 function sendLeaderBoardToRedis()
 {
-    var leaderboardString = JSON.stringify(leaderboard);
-    if (leaderboardString !== lastLeaderboardString) {
-        client.set("leaderboard", leaderboardString);
-        lastLeaderboardString = leaderboardString;
-    }
+    // var leaderboardString = JSON.stringify(leaderboard);
+    // if (leaderboardString !== lastLeaderboardString) {
+    //     client.set("leaderboard", leaderboardString);
+    //     lastLeaderboardString = leaderboardString;
+    // }
 }
 
 function loadLeaderBoardFromRedis()
 {
-    client.get("leaderboard", function(err, reply) {
-        if (reply) {
-            leaderboard = JSON.parse(reply.toString());
-        }
-    });
+    // client.get("leaderboard", function(err, reply) {
+    //     if (reply) {
+    //         leaderboard = JSON.parse(reply.toString());
+    //     }
+    // });
 }
 
 // function isVisible(user, x, y, maxX, maxY) {

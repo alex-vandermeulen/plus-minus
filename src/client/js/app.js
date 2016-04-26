@@ -242,17 +242,11 @@ function getPosition(p1, p2, min, max) {
     }
 }
 
-// function getPosition(p1, p2, min, max) {
-//     return p2 - p1;
-// }
-
 function drawFood(food) {
     graph.strokeStyle = 'hsl(' + food.hue + ', 100%, 45%)';
     graph.fillStyle = 'hsl(' + food.hue + ', 100%, 50%)';
     graph.lineWidth = foodConfig.border;
 
-    // var xpos = food.x - player.x + screenWidth / 2;
-    // var ypos = food.y - player.y + screenHeight / 2;
     var xpos = getPosition(player.x, food.x, 0, gameWidth) + screenWidth / 2;
     var ypos = getPosition(player.y, food.y, 0, gameHeight) + screenHeight / 2;
 
